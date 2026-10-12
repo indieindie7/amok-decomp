@@ -23,7 +23,7 @@
 0x06016f10 func fx_UpdateAll hand DOS fx_UpdateAll twin (by game_UpdateFrame order and 6 map cell lookups: map_GetCellBNearPlayer x5 + map_GetCell); per-record body FUN_06016930
 0x060178ec func obj_CullFar hand audited A1: DOS 0x25064 twin confirmed by callees and callers. DOS obj_CullFar twin (called twice from level_PlayerTriggers and from game_UpdateFrame): math_Atan2 x6, map_GetCellB x3 , bigger than the DOS one (2082 vs 746)
 0x0601821c func shot_MoveAll hand DOS shot_MoveAll twin: fx_SetType, map_GetCellBNearPlayer, by game_UpdateFrame order and size (1564 vs 1509)
-0x060188ac func obj_TickFlagged hand DOS obj_TickFlagged twin by game_UpdateFrame order and size (1052 vs 850): map_GetCellB, math_Atan2
+0x060188ac func obj_TickBreakableHits hand DOS obj_TickFlagged twin by game_UpdateFrame order and size (1052 vs 850): map_GetCellB, math_Atan2 | DB2 renamed with the DOS twin (was obj_TickFlagged)
 0x06018d28 func obj_UpdateAll hand DOS obj_UpdateAll twin by game_UpdateFrame order: fx_SetType x4, math_Atan2 x2, ashr12 x4 (cell index of 16.16 positions)
 0x06019768 func shot_CollideEntities hand DOS shot_CollideEntities twin by game_UpdateFrame order and size (1224 vs 1258): map_GetCellBNearPlayer, math_Atan2, fx_SetType
 0x0602e3dc func player_Control hand DOS player_Control twin: math_Atan2 x2, map_GetCell x5, fx_Spawn x3, obj_Spawn x3, player_PartStateB/A x2 each, player_WeaponSoundTick x2, player_BuildPartSprites x2, player_Move, level_PlayerTriggers, lvl_ScanObjectTypes; callers inside state_InGame
@@ -35,9 +35,9 @@
 0x060303cc func player_Move hand DOS player_Move twin: math_Atan2 x2, ashr12 x10 (cell indices), ashr23 x3, FUN_06016338 x3; called once from player_Control
 0x06033a00 func lvl_ScanObjectTypes hand DOS lvl_ScanObjectTypes twin: snd_Command x9, fx_Spawn x3, fx_SetType, math_Atan2, map_GetCellB, FUN_06030ab8, FUN_060165d4
 0x06035084 func ai_Boss_Update hand DOS ai_Boss_Update_frag twin: fx_Spawn x6, ai_BigEntityAimPoint, ai_BigEntityPickMode x2, ai_BigEntityMove x2 (no callers: reached through the AI type table)
-0x06034a64 func ai_BigEntityAimPoint hand audited A2: DOS 0x46690 role twin (math_Atan2, boss update caller). DOS ai_BigEntityAimPoint twin by order and size (184 vs 304) 
+0x06034a64 func ai_BigEntityIsAimed hand audited A2: DOS 0x46690 role twin (math_Atan2, boss update caller). DOS ai_BigEntityAimPoint twin by order and size (184 vs 304)  | DB2 renamed with the DOS twin (was ai_BigEntityAimPoint)
 0x06034bdc func ai_BigEntityPickMode hand audited A1: DOS 0x468b8 twin confirmed by callees and callers. DOS ai_BigEntityPickMode twin by order (582 vs 661) 
-0x06034e70 func ai_BigEntityMove hand audited A2: DOS 0x46bf5 role twin (boss update caller). DOS ai_BigEntityMove twin by order (494 vs 738) 
+0x06034e70 func ai_EmitBossSprites hand audited A2: DOS 0x46bf5 role twin (boss update caller). DOS ai_BigEntityMove twin by order (494 vs 738)  | DB2 renamed with the DOS twin (was ai_BigEntityMove)
 0x0601d080 func ai_t00_Init hand AI type table 0x6011c14 row 0 (0x20-byte rows, +0xc init, +0x10 think, +0x14 update, +0x18 slot2, +0x1c hit) Init slot; DOS table 0xc6e6c twin (init, not in the DOS table)
 0x0601d0e0 func ai_t00_Think hand AI type table 0x6011c14 row 0 (0x20-byte rows, +0xc init, +0x10 think, +0x14 update, +0x18 slot2, +0x1c hit) Think slot; DOS table 0xc6e6c twin ai_t00_Think
 0x0601d1c4 func ai_t00_Update hand AI type table 0x6011c14 row 0 (0x20-byte rows, +0xc init, +0x10 think, +0x14 update, +0x18 slot2, +0x1c hit) Update slot; DOS table 0xc6e6c twin ai_t00_Update
@@ -186,7 +186,7 @@
 0x060360b0 func ai_Pointer_c6874_Hit hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 3 Hit; DOS row 0xc685c twin ai_Pointer_c6874_Hit
 0x060360e4 func ai_Pointer_c6878_Die hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 3 Die; DOS row 0xc685c twin ai_Pointer_c6878_Die
 0x06027c70 func ai_Pointer_c68a8_Hit hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 5 Init; DOS row 0xc689c twin ai_Pointer_c68a8_Hit
-0x06027d3c func ai_FacePlayer hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 5 Update; DOS row 0xc689c twin ai_FacePlayer
+0x06027d3c func ai_SeekerProjectileUpdate hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 5 Update; DOS row 0xc689c twin ai_FacePlayer | DB2 renamed with the DOS twin (was ai_FacePlayer)
 0x0602803c func ai_Pointer_c68b0_Think hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 5 Think; DOS row 0xc689c twin ai_Pointer_c68b0_Think
 0x06028054 func ai_Pointer_c68b4_Hit hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 5 Hit; DOS row 0xc689c twin ai_Pointer_c68b4_Hit
 0x06027cd0 func ai_Pointer_c68b8_Die hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 5 Die; DOS row 0xc689c twin ai_Pointer_c68b8_Die
@@ -216,7 +216,7 @@
 0x06026dc0 func ai_Pointer_c6974_Hit hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 11 Hit; DOS row 0xc695c twin ai_Pointer_c6974_Hit
 0x06026c50 func ai_Pointer_c6978_Die hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 11 Die; DOS row 0xc695c twin ai_Pointer_c6978_Die
 0x0602d224 func cut_Enter hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 12 Init; DOS row 0xc697c twin cut_Enter
-0x0602d49c func ai_HomeOnTarget hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 12 Update; DOS row 0xc697c twin ai_HomeOnTarget
+0x0602d49c func ai_FollowPathFire hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 12 Update; DOS row 0xc697c twin ai_HomeOnTarget | DB2 renamed with the DOS twin (was ai_HomeOnTarget)
 0x0602d7d8 func ai_Pointer_c6990_Update hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 12 Think; DOS row 0xc697c twin ai_Pointer_c6990_Update
 0x0602d8b8 func ai_Pointer_c6994_Hit hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 12 Hit; DOS row 0xc697c twin ai_Pointer_c6994_Hit
 0x0602d0f0 func boss_DeathBurst hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 12 Die; DOS row 0xc697c twin boss_DeathBurst
@@ -236,7 +236,7 @@
 0x06027504 func ai_Pointer_c69f4_Hit hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 15 Hit; DOS row 0xc69dc twin ai_Pointer_c69f4_Hit
 0x06027554 func ai_Pointer_c69f8_Die hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 15 Die; DOS row 0xc69dc twin ai_Pointer_c69f8_Die
 0x0602ae18 func ai_Pointer_c6a08_Init hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 16 Init; DOS row 0xc69fc twin ai_Pointer_c6a08_Init
-0x0602ae28 func ai_Pointer_c6a0c_Spawn hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 16 Update; DOS row 0xc69fc twin ai_Pointer_c6a0c_Spawn
+0x0602ae28 func ai_Pointer_c6a0c_Update hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 16 Update; DOS row 0xc69fc twin ai_Pointer_c6a0c_Spawn | DB2 renamed with the DOS twin (was ai_Pointer_c6a0c_Spawn)
 0x0602b180 func ai_Pointer_c6a10_Think hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 16 Think; DOS row 0xc69fc twin ai_Pointer_c6a10_Think
 0x0602b198 func ai_Pointer_c6a14_Hit hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 16 Hit; DOS row 0xc69fc twin ai_Pointer_c6a14_Hit
 0x0602b1a4 func ai_Pointer_c6a18_Die hand AI pointer rows 0x60115b4 (51 rows x 0x20 before the type table, +0xc init +0x10 update +0x14 think +0x18 hit +0x1c die) row 16 Die; DOS row 0xc69fc twin ai_Pointer_c6a18_Die
