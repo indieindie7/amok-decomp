@@ -1,5 +1,6 @@
 // GrowToRange.java: args are pairs <entry> <end> (hex, end exclusive). Disassembles undefined bytes in [entry,end)
 // and sets the function at entry to every instruction in that span that no other function owns.
+// A single arg @<file> reads the pairs from that file (whitespace separated).
 // For single-prologue / single-ret functions whose body Ghidra left short (code reached only through flows it lost).
 import ghidra.app.cmd.disassemble.DisassembleCommand;
 import ghidra.app.script.GhidraScript;
@@ -9,7 +10,7 @@ import ghidra.program.model.listing.*;
 public class GrowToRange extends GhidraScript {
     @Override
     public void run() throws Exception {
-        String[] a = getScriptArgs(); FunctionManager fm = currentProgram.getFunctionManager(); Listing lst = currentProgram.getListing();
+        String[] a = getScriptArgs(); if (a.length == 1 && a[0].startsWith("@")) a = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(a[0].substring(1)))).trim().split("[ \t\r\n]+"); FunctionManager fm = currentProgram.getFunctionManager(); Listing lst = currentProgram.getListing();
         for (int i = 0; i + 1 < a.length; i += 2) {
             Address s = toAddr(Long.parseLong(a[i].replace("0x", ""), 16)), e = toAddr(Long.parseLong(a[i + 1].replace("0x", ""), 16) - 1);
             Function f = fm.getFunctionAt(s);
