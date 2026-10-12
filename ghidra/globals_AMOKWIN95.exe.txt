@@ -717,7 +717,7 @@
 0x005d36cc g_frame_ticks_pending
 0x005d36d0 g_player_control_value_36d0
 0x005d3a40 g_frame_time_scale
-0x00683540 g_win_unknown_683540
+0x00683540 buf_menu_shorts_3540
 0x006835d8 g_win_width
 0x006835dc g_win_height
 0x006835e0 g_win_bpp

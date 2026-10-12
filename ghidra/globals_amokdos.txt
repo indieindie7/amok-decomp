@@ -128,7 +128,7 @@
 0x000cc5cc g_cam_z
 0x000cc5d0 tbl_level_music_track
 0x000cc5e4 tbl_menu_enter_state
-0x000cc604 g_unk_cc604
+0x000cc604 tbl_difficulty_next_level
 0x000cc614 tbl_fov_by_world
 0x000cc616 tbl_fov_by_world_hi
 0x000cc62a tbl_pal_param_a
@@ -163,7 +163,7 @@
 0x000ccb54 g_keymask_key_b
 0x000ccb6c tbl_crosshair_frames
 0x000ccb90 tbl_menu_glyph_map
-0x000ccc0e g_unk_ccc0e
+0x000ccc0e tbl_level15_script
 0x000ccc50 tbl_debrief_char
 0x000ccc74 g_langmenu_active
 0x000ccc80 s_keys_menu_default_text
@@ -227,7 +227,7 @@
 0x000cd254 g_font_mini_file
 0x000cd7a9 crt_cpu_type
 0x000cd7b0 crt_ptr_int_handler
-0x000cd7b4 crt_unk_cd7b4
+0x000cd7b4 g_crt_fini_fpe_hook
 0x000cd7b8 crt_iob_table
 0x000cd7ec s_fatal_error_fmt
 0x000cd7f9 crt_iob_flags
@@ -353,7 +353,7 @@
 0x000cea78 dig_mix_int_step
 0x000cea7c dig_mix_int_step_plus1
 0x000cea80 crt_env_case_flag
-0x000cea84 crt_env_ptr_var
+0x000cea84 crt_env_ptr_var_ea84
 0x000cea88 crt_localtime_work
 0x000ceaac crt_tz_seconds_adj
 0x000ceab0 crt_tz_minutes_adj
@@ -715,7 +715,7 @@
 0x002124f8 g_msg_text_ptr
 0x002124fc g_msg_ptr_a
 0x00212500 g_msg_ptr_b
-0x00212504 g_world_art_buf_var
+0x00212504 g_world_art_buf_var_2504
 0x00212528 g_level15_effect_pal
 0x00212568 g_saved_level
 0x0021256c g_anim_script_ptr
@@ -788,7 +788,7 @@
 0x002c242e g_menu_language_index
 0x002c2430 g_menu_mode
 0x002c2432 g_menu_item_state
-0x002c2450 g_menu_dat_2450
+0x002c2450 buf_menu_shorts_2450
 0x002c2474 g_menu_handler
 0x002c2478 g_menu_page_cur
 0x002c247c g_menu_page_main
@@ -973,7 +973,7 @@
 0x002c6740 ail_reentry_flag
 0x002c6744 ail_log_buffer
 0x002c6748 ail_log_file_handle
-0x002c674c ail_field_674c
+0x002c674c tbl_atexit_funcs
 0x002c67cc crt_atexit_count
 0x002c67d0 ail_startup_buffer
 0x002c67e8 ail_startup_field_67e8
@@ -984,7 +984,7 @@
 0x002c6940 ail_preference_table
 0x002c6944 ail_dig_dma_buffer
 0x002c6948 ail_pref_dma_size
-0x002c694c ail_field_694c
+0x002c694c g_ail_pref_dig_buffer_ms
 0x002c6950 ail_pref_field_6950
 0x002c6954 ail_pref_sample_default
 0x002c6958 ail_pref_mixer_value
@@ -1042,7 +1042,7 @@
 0x002c6d20 crt_cmdargs_flag
 0x002c6d24 crt_int23_state
 0x002c7130 crt_cstart_buffer
-0x002c7d10 crt_int23_flag_var
+0x002c7d10 crt_int23_flag_var_7d10
 0x002d0890 g_floor_rc_field_0890
 0x002d0894 g_floor_rc_block_base
 0x002d0898 g_floor_rc_x
