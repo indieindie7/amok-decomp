@@ -1,0 +1,71 @@
+struct AmokSlotRow 20
+5 byte flags_b   # ent_InitRecord (0xc6e61 -> entity +0x22)
+8 byte turn   # obj_CullFar (tbl_enttype_turn 0xc6e64, size guessed byte)
+9 byte flags   # obj_TickBreakableHits (0xc6e65, bit 0x20 breakable)
+a ushort hi   # obj_Spawn (0xc6e66, copied to entity +0x52)
+c pointer init   # obj_Spawn (call [row+0xc])
+10 pointer think   # obj_Spawn (copied to entity +0x40)
+14 pointer hurt   # obj_Spawn (copied to entity +0x44)
+18 pointer hit   # obj_Spawn (copied to entity +0x48)
+1c pointer die   # obj_Spawn (copied to entity +0x4c)
+
+struct AmokEntity 90
+0 pointer next   # obj_Spawn / fx_InitPool (list and free-list link)
+4 short height   # obj_Spawn param_3, ai_DriftStep
+6 short cell   # ai_DriftStep (map_GetCell result)
+8 short type   # obj_Spawn param_4 (row index)
+a short frame_prev   # ai_AnimNext
+c short frame_next   # ai_AnimNext
+e short heading   # ai_TurnToward
+14 ushort target_flags   # ai_HeadingToTarget (0xc000 mask: 0x4000 p1, 0x8000 p2)
+16 short aim_angle   # ent_AimAtTarget
+18 short hurt_countdown   # obj_Spawn, ai_t12_Hit
+1a short aim_target   # ai_AimAtTarget
+1c short anim   # ai_t00_Think
+20 byte dead_state   # fx_InitPool zeroes, obj_UpdateAll (dead entity freed)
+21 byte spawn_bits   # obj_Spawn (spawn_dw bits 24..26 + 0x80)
+22 short scale   # ent_InitRecord (-1 on death in ai Die slots)
+28 pointer prev   # obj_Spawn (back link, head points at g_entity_list)
+2c pointer health_ptr   # obj_Spawn (points at entity +0x52), ai_t12_Hit
+30 int x   # obj_Spawn param_1, obj_TickBreakableHits
+34 int y   # obj_Spawn param_2
+38 short vel_x   # ai_VelocityToTarget
+3a short vel_y   # ai_VelocityToTarget
+40 pointer think   # obj_Spawn (row +0x10)
+44 pointer hurt   # obj_UpdateAll update slot (row +0x14)
+48 pointer hit   # shot_CollideEntities (row +0x18)
+4c pointer die   # shot_CollideEntities hit slot (row +0x1c)
+52 ushort health   # obj_Spawn (from row hi)
+88 int hit_sentinel   # ai_t10_Hit / ai_t12_Hit
+8c int sound   # obj_CullFar (stops sound)
+
+struct AmokFx 30
+0 pointer next   # fx_InitPool (free-list link)
+6 short type   # fx_UpdateAll
+12 short range   # shot_MoveAll (shots)
+24 pointer owner   # fx_Spawn
+2c pointer next_shot   # fx_UpdateAll (type 0xe shot chain)
+
+struct AmokShot 30
+0 pointer next   # fx_InitPool (shots are type 0xe fx records)
+6 short type   # fx_UpdateAll (0xe)
+12 short range   # shot_MoveAll
+24 pointer owner   # fx_Spawn
+2c pointer next_shot   # fx_UpdateAll (chain DAT_00211d14)
+
+struct AmokPlayer e4
+2 short heading   # player_ProbeAhead
+14 int x   # player_Move, worldmap_Draw
+18 int y   # player_Move
+1c int cell_x   # player_UpdateCell
+20 int cell_y   # player_UpdateCell
+44 int part_count   # player_BuildPartSprites
+54 int trail_count   # player_PartSoundB
+6a short view_mode   # cam_FollowPlayer
+6c short voice   # player_PartSoundA
+70 int health   # player_ExplosionPush
+78 int hurt_timer   # player_ExplosionPush
+88 int bump   # player_ExplosionPush
+90 int crosshair_x   # crosshair_Draw
+94 int crosshair_y   # crosshair_Draw
+d2 short weapon_tick   # player_WeaponSoundTick

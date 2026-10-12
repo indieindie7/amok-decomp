@@ -1,0 +1,11 @@
+# struct types for AMOK DOS globals (ApplyGlobals.java; structs from structs_amok.txt via DefineStructs.java /Amok)
+0x000c67fc tbl_enttype_rows AmokSlotRow[88]
+0x0012c784 g_fx_active_list AmokFx*
+0x0012c78c g_fx_free_list AmokFx*
+0x0012c790 g_entity_list AmokEntity*
+0x0012c798 g_entity_free_list AmokEntity*
+0x0012c7c0 g_fx_pool AmokFx[150]
+0x0012e400 g_entity_pool AmokEntity[96]
+0x00211d14 g_fx_list_head AmokShot*
+0x00211ee4 g_player1_entity AmokPlayer
+0x00211fc8 g_player2_entity AmokPlayer

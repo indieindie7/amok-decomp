@@ -1,0 +1,2 @@
+# struct types for AMOK Saturn globals (AI pointer rows, NOTES S5: 51 x 0x20, DOS row j = 0xc67fc + j*0x20)
+0x060115b4 tbl_enttype_rows AmokSlotRow[51]

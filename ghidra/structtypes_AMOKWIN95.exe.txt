@@ -1,0 +1,4 @@
+# struct types for AMOK Win95 globals (data = DOS address + 0x3be32c)
+0x00484b28 tbl_enttype_rows AmokSlotRow[88]
+0x004ed880 g_entity_list -   # uninitialised block: no data can be created here
+0x004ed888 g_entity_free_list -

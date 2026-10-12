@@ -31,6 +31,7 @@ public class ApplyGlobals extends GhidraScript {
     if (ptr) t = t.substring(0, t.length() - 1);
     DataType dt = builtin(t);
     if (dt == null) dt = currentProgram.getDataTypeManager().getDataType(new CategoryPath("/Scorcher"), t);
+    if (dt == null) dt = currentProgram.getDataTypeManager().getDataType(new CategoryPath("/Amok"), t);
     if (dt == null) return null;
     if (ptr) dt = new PointerDataType(dt, currentProgram.getDataTypeManager());
     if (n > 0) dt = new ArrayDataType(dt, n, dt.getLength(), currentProgram.getDataTypeManager());

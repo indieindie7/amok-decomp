@@ -14,6 +14,7 @@ Hand-named function maps, Ghidra scripts, tools and working notes for the mech s
 | `ghidra/hand_AMOKWIN95.txt` | 546 hand lines for the Win95 build (`AMOKWIN95.EXE`, 1030 functions, all named) |
 | `ghidra/hand_XLEMLAN1.txt` | 634 hand lines for the Saturn game program `XLEMLAN1.BIN` (634 functions, all named) |
 | `ghidra/globals_*.txt` | global variable labels (`0x<addr> <name>`, apply with `ApplyGlobals.java`): DOS 1118, Win95 841, Saturn 358 RAM variables + 1961 `p_<name>` literal-pool slots; names with an address suffix are best guesses |
+| `ghidra/structs_amok.txt`, `ghidra/structtypes_*.txt` | entity / fx / player / type-row struct layouts (define with `scripts/DefineStructs.java <spec> /Amok`) and the globals typed with them (apply with `ApplyGlobals.java`) |
 | `ghidra/funcinfo_*.tsv` | per-function export: address, name, size, callees, string references |
 | `ghidra/xalign_*.txt`, `sig_*.txt`, `bogus_deleted_amokdos.txt` | cross-build alignment, Watcom runtime signatures, false functions removed |
 | `ghidra/x86watcom.cspec` | compiler spec for the Watcom register calling convention |
