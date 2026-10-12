@@ -31,7 +31,7 @@
 0x4c150 func mem_Set hand memset(ptr,val,n) used by mem_Alloc
 0x23df8 func snd_Command hand sound/music dispatcher (NOT noreturn): code>>12: 8 = CD track (0x8000 stop, 0x8002+n play track), 0xb/0xc = play sfx (code and 0xfff) gated by sound mode DAT_002c250c (0xc also needs mode != 0), 0xe = set sound mode, 0xf = stop all (fn_41fae4); arg2 = volume 0..127
 0x1a534 func state_Menu hand game_Tick case 9: builds the 15-bit palette table, loads langmenu.raw when DAT_000ccc74
-0x18240 func state_AfterLevel hand game_Tick case 8: picks next state by DAT_000cef7c (level), and plays the CD track via snd_Command
+0x18240 func state_AfterLevel hand game_Tick case 8: picks next state by DAT_000cef7c (level), and plays the CD track via snd_Command | merged DOS-B1 the cut 0x18573 anim_StartThunk (jumps to anim_Start)
 0x17fa0 func state_NextLevel hand game_Tick case 10: plays CD track 0x8002+levelidx via snd_Command
 0x18738 func anim_RunScript hand byte-code interpreter (opcode switch, 0x80 = end) used by debrief_Show
 0x195a0 func state_TextScroll hand game_Tick case 0xc: scroll counter DAT_00212970 to 800, skip on key
@@ -75,7 +75,7 @@
 0x8524a func blit16_Mode4 hand vid_Flip16 cases 4 and 6
 0x8461e func blit16_Linear hand vid_Flip16 when the mode type byte != 2
 0x80b2b func blit16_Banked hand vid_Flip16 fallback
-0x5d3c0 func AIL_API_install_MDI_driver_file hand .MDI driver required / XMIDI sound hardware not found
+0x5d3c0 func ail_InstallMdiDriverCore hand .MDI driver required / XMIDI sound hardware not found | DOS-B1 renamed from duplicate name AIL_API_install_MDI_driver_file
 0x5e0b9 func xmi_SequencerTick hand XMIDI sequencer timer service (Internal note queue overflow)
 0x62400 func fpe_DecodeInstruction hand Watcom x87 emulator decoder (prefix bytes 0x26/0x2e/0x36/0x3e/0x64..0x67)
 0x14a88 func hud_Draw hand in-game HUD: timers DAT_00211f5c/DAT_00212040, digit font s_01234567, sprites from DAT_00138df4
@@ -91,7 +91,6 @@
 0x17694 func map_GetCell hand samples the tile map (64 tiles wide, 8x8 cells, tables DAT_00138e0c/DAT_00138e04/DAT_0012a762) at world x,y (16.16)
 0x175e4 func math_Atan2 hand table DAT_001ba1aa, 2048-unit angles with 0x400 quadrant offsets
 0x14940 func level15_ScriptTick hand level 0xf only: steps the short table PTR_FUN_000ccc0e, fires FUN_0002330c(x,y)
-0x25485 func ent_AimAtTarget hand turns an entity (+0x16 angle) toward its target with math_Atan2; type table DAT_000c6e64 (0x20 per type)
 0x166d8 func fx_Flash hand profiler label flash
 0x17944 func game_Logic hand per-frame logic, profiler labels Logic / Comanche / Logic 2
 0x189a8 func anim_UpdateA hand profiler label Anim (provisional)
@@ -115,10 +114,9 @@
 0x1f8ec func prof_PrintReport hand rate/lost/total/fps/fr/fm/tid lines, called from vid_CopyVram and vid_Present
 0x10af8 func quan_Cut hand Wu quantizer cut: quan_Vol on the 4 moment cubes then quan_Maximize
 0x104b0 func quan_Vol hand Wu quantizer volume of a box
-0x10960 func quan_Maximize hand Wu quantizer best cut position
+0x10960 func quan_Maximize hand Wu quantizer best cut position | merged DOS-B1 the cut 0x109d0 quan_SplitBox (Wu quantizer: tries the three quan_Partition axes and returns the best variance; called by quan_NearestColour)
 0x10574 func quan_Top hand Wu quantizer Top/Bottom sums, arg2 = axis 0/1/2, 0x84-byte strides
 0x1006b func quan_Alloc hand allocates the quantizer tables (Quan: not enough space)
-0x3a400 func ai_TurnAndChase hand entity +0x78 countdown (max 0x28), FUN_0003a2cf angle diff; provisional
 0x40824 func ai_AimFire hand math_Atan2 to the target, +0x88 = 1/2 when within 0x300 angle units, frame counter DAT_00211d18; provisional
 0x3b284 func ai_Launch hand sets +0x88 = 5, +0x1c = 1, adds 0x1a9/0x591 velocity per angle, table DAT_00211d24 (8-byte); provisional
 0x30004 func ai_Hover hand smooths +0x70 (x30/32), bobs +4 and +0x12 from it; provisional
@@ -134,20 +132,15 @@
 0x1a438 func menu_HandleKeys hand reads key buffer DAT_002c2518 (up/down DAT_000cef28 wraps 0..3) for the main menu; called by state_Menu
 0x18580 func anim_DrawFrameC hand draws an RLE anim frame (fn_41149c lookup in DAT_00138e00 table) into the 8bpp screen DAT_000cefe0; called by anim_UpdateC
 0x488c1 func ai_SpawnProjectile hand spawns an object (FUN_00024f0c) at offset x/y<<2 and bumps DAT_00211938 by 5; asm-mangled (unaff_EBP); provisional
-0x443c7 func ai_VehicleMove hand integrates entity velocity (+0x70/+0x74) into position (+0x34/+0x38) with 63/64 damping; asm-mangled; provisional
 0x34b7c func ai_PickTargetSector hand entity logic using sector table DAT_00211d24 (8 bytes per cell) and random DAT_00211d1c; provisional
-0x392e8 func ai_StrafeMove hand moves an entity along sin/cos (DAT_001b8a6a) by +0xc heading; spawns via FUN_00024f0c when state byte == -0x1a; provisional
 0x1ef74 func vid_CycleMode hand debug key handler: DAT_002c66a6 -4/-5 steps the video mode index DAT_002c3a49 through the mode table DAT_000cd06c; called from dbg key path
-0x1cdb0 func txt_DrawString hand 3-pass loop over glyph records (FUN_0001cae4 lookup in table DAT_002c3980, FUN_0001caf8 per glyph); provisional, asm stack args
 0x11a54 func pal_TintBuffer hand per-pixel tint of a 24bpp palette buffer (grey = avg rgb) by mode DAT_00212974 (+1 when debrief state 0xb not active and DAT_00138dc4 is 1/3); called by anim_UpdateC
 0x35b8d func ai_SetWaypoint hand sets entity target (+0x78/+0x7c) from grid cell * 256 + offset, random phase +0x80 (DAT_00211d1c); provisional
 0x1c5ce func mem_AllocTracked hand malloc (fn_44c56b) of a 0x24-byte node linked into list DAT_002c2594; strings not enough memory / total alloc
-0x361e9 func ai_ApproachTarget hand halves the distance to +0x30 each step while w*h+z < 0x1001; provisional
+0x361e9 func ai_HalveDistToTarget hand halves the distance to +0x30 each step while w*h+z < 0x1001; provisional | DOS-B1 renamed from duplicate name ai_ApproachTarget
 0x3d58e func ai_MoveDamped hand sets +0x64 = arg, damps +0x68 by 31/32 and adds velocity +0x78.. into position shorts +0xe/+0x10/+0x12; provisional
-0x1ae6c func opt_MenuDifficulty hand options menu entry (Hard / None strings, menu widget PTR_DAT_000cce00 via fn_41aa5c / fn_41a910); flags DAT_002c242e / DAT_000ccdff
-0x329e9 func ai_SetWaypointRadius hand like ai_SetWaypoint but checks the squared distance against param_2 first; provisional
-0x40568 func ai_TurnToward hand math_Atan2 toward (x,y) minus heading +0xc, clamps the turn to +-0x10 per tick; provisional
-0x2dffb func lvl_ScanObjectTypes hand iterates objects checking type record 0xc4f9c[type*0x14] flag byte +0xa bit 2; split tail of 0x2e9a4; provisional
+0x1ae6c func opt_MenuDifficulty hand options menu entry (Hard / None strings, menu widget PTR_DAT_000cce00 via fn_41aa5c / fn_41a910); flags DAT_002c242e / DAT_000ccdff | merged DOS-B1 the cut 0x1af9a opt_MenuDifficultyDraw (draw side of opt_MenuDifficulty: picks PTR_DAT_000ccccc[DAT_002c242e] label, widget DAT_000cce4e)
+0x329e9 func ai_SetWaypointRadius hand like ai_SetWaypoint but checks the squared distance against param_2 first; provisional | merged DOS-B1 the cut 0x32c84 ai_SetFacing (asm-mangled: +0xa = arg>>7, +0x20 += (+8>>16)*0x300, +0xc from the target +0x18; provisional)
 0x1ab40 func opt_KeyDefine hand key-config entry: scans the key buffer DAT_002c2518 (codes < 0x7b) against name table PTR_DAT_000ccfe0 and stores up to 5 keys at +0xe
 0x1b029 func opt_KeyPreset hand key-config preset select (User Defined / Default strings, table DAT_000ccd10) on keys 0xcb/0xcd
 0x34805 func ai_SpawnAbove hand spawns type 5 object 0x200 above the entity via FUN_00024f0c, heading from the frame counter DAT_00211d18; provisional
@@ -159,25 +152,16 @@
 0x10a4d func quan_NearestColour hand float squared-distance search (quantizer family, 10 stack args); provisional
 0x1e77c func vid_SwapPages hand swaps the two VESA page offsets DAT_002c3a2a / DAT_002c3a2e and calls vesa_SetDisplayStart; called by vid_ClearScreen and eng_FrameTimer
 0x320fb func ai_MoveSlow hand asm-mangled entity move: +0x68 = (+0x68*10 + d)>>5, clears +0x1c; provisional
-0x3a824 func ai_InRange hand returns whether dx*dx+dy*dy is under (radius-8)^2 of the target record; provisional
-0x31800 func ai_Idle hand sets target (+0x78/+0x7c) to own position (+0x30/+0x34), +0x70 = frame & 1; provisional
 0x1ba0c func opt_MenuNumber hand options menu number entry 0..0xf in DAT_000ccd34 (left/right on key 0xcb), formatted with fn_44c3a5 (itoa base 10) into DAT_002c24b4
-0x2e85d func lvl_EndCheckTail hand split tail of 0x2e9a4 (switch on local -0x7c, snd_Command(0xc227,0x7f) sfx 0x227 full volume); provisional
-0x1af9a func opt_MenuDifficultyDraw hand draw side of opt_MenuDifficulty: picks PTR_DAT_000ccccc[DAT_002c242e] label, widget DAT_000cce4e
 0x1c98c func dpmi_SimulateRealInt hand fills the DPMI real-mode call block DAT_002c29d4 (ax=0x300 simulate real mode interrupt) for the CD-ROM MSCDEX calls; called by cd_Command / cd_Init
 0x2235c func hud_SetViewport hand saves backbuffer/width/height (DAT_000cefd8/d0/d4) and sets the view height to h*61/256 (+1 under 256); called by hud_Draw
 0x11c04 func pal_To555Clamped hand converts n RGB bytes (values > 0xfb clamped) to 555 shorts; called by anim_UpdateC
-0x32c84 func ai_SetFacing hand asm-mangled: +0xa = arg>>7, +0x20 += (+8>>16)*0x300, +0xc from the target +0x18; provisional
 0x148a8 func lvl15_QueueEvent hand pushes (record + menu index*0xc, arg) into the 8-slot ring DAT_002124b8 / DAT_002124d8 (head DAT_002124a8)
-0x109d0 func quan_SplitBox hand Wu quantizer: tries the three quan_Partition axes and returns the best variance; called by quan_NearestColour
 0x186ac func anim_DrawSpriteGrid hand draws 8x11 cells from the anim script sprite at DAT_002125f0/f4 into the 8bpp screen DAT_000cefe0 (pitch 0x500); called by anim_RunScript
 0x1b774 func opt_FormatMenuValues hand formats DAT_000ccd30 / DAT_000ccd34 / DAT_002c3984 into the option menu strings DAT_002c24a8 / b4 / c0 (itoa fn_44c3a5), label PTR_DAT_000ccd38[DAT_002c24ca]
 0x3c9be func ai_SetVelocityFromAngle hand velocity +0x58/+0x5c = -4*sin, 4*cos of the angle arg; provisional
 0x35440 func ai_StepBack hand +0xe = arg, +0x58 = (+0x58+1)&0x1f, moves +0x30 back along the heading sin; provisional
-0x3d9be func ai_ChangeGroundPoint hand debug print changegndpnt no %d %d %d %d, spawns type 0x14 object 0x280 above (FUN_00024f0c), clears +0x20; provisional
-0x33de8 func ai_RandomHeading hand +0xa = frame-based random + (+0x54>>8) - 0x100, +0xc = random - 0x140; provisional
 0x33cc6 func ai_OrbitTarget hand +0xa from cos*3/128 + (+0x54>>9), +0x1c += (+6>>16)*0x400; provisional
-0x245a2 func timer_FindByCallback hand walks the DAT_002123d4 timer list (count DAT_002123d8) for the entry whose +0xc callback is FUN_000244dc
 0x12c70 func level_InitPalette hand sets DAT_00211f5c / DAT_00212040 = 1, pal_Build555Table, player entity DAT_00211910 from ECX, fn_41354c; called by state_InGame
 0x1bdd8 func file_Open hand opens a file via FUN_0004b9ad (fopen) into DAT_000c24b4; prints file open error %s errorcode=%d; used by the minifont.bin loader
 0x1bc6c func file_OpenB hand second file_Open variant (fopen FUN_0004b9ad into DAT_000c243c, same error string); used by the file load error callers
@@ -191,31 +175,23 @@
 0x198be func grm_RequestState hand DAT_00212954 = requested state; only honoured when the game state DAT_000cef64 allows it (< 9, not in-level 0..2)
 0x13204 func level_FreeStatic hand frees the level static buffers DAT_00138df4 / df8 / dec / DAT_000c5fc8 when DAT_00212968 is set; called by game_CloseDown
 0x3e800 func ai_InitBoss hand entity init: +0x70 = 1, +0x1c = 0x8000, +0x54 = -2, +0x8c = 0xc11d (grm code); provisional
-0x24611 func math_Percent hand returns round(a*100/b), 100 when b == 0
 0x11bc0 func pal_From555 hand expands n 555 shorts to RGB bytes (x<<3); called by anim_UpdateC
 0x23ec4 func opt_StepSfxVolume hand DAT_000ccd34 0..0x10 down/up by the char arg, then snd_SetVolume; called by main (keys)
-0x39ae8 func ai_InitWalker hand entity init: +0xe = arg hi + off, +0x54 = 0, +0x60 = 0xf unless flag bit 0 at +8; provisional
 0x1e6e8 func vesa_SetBank hand VESA ax=0x4f05 window bank switch through dpmi_SimulateRealInt(0x10); prints bank switch failed
 0x1e5dc func vesa_SetMode hand VESA ax=0x4f02 set mode (mode in CX) through dpmi_SimulateRealInt(0x10); called by vid_SetMode
 0x1c2e9 func dpmi_AllocDosBlock hand int386x(0x31) DPMI call, returns DAT_002c2554 (segment/selector); mangled stack args
 0x1aa9c func menu_Enter hand grm_Pop + level_FreeBuffers, difficulty DAT_002124a0 from table DAT_000cc5e4[DAT_002c242e], DAT_00212434 = 0; called by state_Menu
-0x1f830 func prof_PrintLine hand prints %-16s %9d profiler rows, at most 200 (DAT_002c48d8) via FUN_00054845 (printf); called by rend_DrawObjects
+0x1f830 func prof_PrintLine hand prints %-16s %9d profiler rows, at most 200 (DAT_002c48d8) via FUN_00054845 (printf); called by rend_DrawObjects | merged DOS-B1 the cut 0x1f886 prof_PrintFloatLine (prints a %-15s%8.3f profiler row via FUN_00054845 (printf), bumps DAT_002c48d8)
 0x1f070 func vga_SetTextMode hand once (DAT_002c2508) restores the text mode with int386(0x10); called by fatal_Error and game_Exit
 0x1cc94 func txt_CopyGlyph hand copies glyph bytes from param_2 to the glyph record (5 words header); called by txt_DrawString
-0x32414 func ai_SetHeightRange hand +0x1c = hi - lo, +0x84 = map_GetCell(pos); provisional
-0x454be func ai_ResetPhase hand calls FUN_000450f7(ent, arg) then clears +0x80; provisional
 0x36c05 func ai_ClampDescent hand sets locals -3 / -0x300 unless -0x100 (thunk_FUN_00036c16); asm-mangled; provisional
-0x2e16d func player_Heal hand player entity DAT_00211910: +0x70 (health) += 0x20 capped at +0x74 (max); falls into the lvl switch default
 0x23f04 func opt_ToggleCdMusic hand toggles DAT_002c24ca (CD music on/off): off = fn_41f160(stop track), on = 1; called by main (keys)
 0x1987c func vid_FreeBackbuffer hand DAT_00212954 = 1, DAT_000cc5bc = 1, mem_Free of the 16bpp backbuffer DAT_000cefdc; called by vid_SetMode
 0x349f8 func ai_HoldPosition hand target (+0x78/+0x7c) = own position (+0x30/+0x34); provisional
 0x1b489 func dbg_VideoModeKey hand debug key: stores SI into DAT_002c66a6, vid_CycleMode, DAT_002c2430 = 1, then the nothing handler
 0x1080d func quan_BoxSum hand Wu quantizer: inclusion-exclusion sum of a box from the cumulative moment table; asm-mangled
-0x243e6 func timer_CallEntry hand calls a timer entry callback (+0xc) with the elapsed count (DAT_002123d8 - entry stamp); returns 2; split body
-0x1f886 func prof_PrintFloatLine hand prints a %-15s%8.3f profiler row via FUN_00054845 (printf), bumps DAT_002c48d8
 0x11434 func rd_BigEndian32InPlace hand reads a big-endian dword and stores it back native at the same place (file headers are big-endian = Saturn-authored)
-0x1caf8 func rd_BigEndian32 hand returns a big-endian dword (glyph table offsets); called by txt_DrawString
-0x429e8 func ai_ResetTarget hand FUN_0004289f then target +0x7c = +0x30, +0x80 = ...; provisional
+0x1caf8 func txt_BigEndian32 hand returns a big-endian dword (glyph table offsets); called by txt_DrawString | DOS-B1 renamed from duplicate name rd_BigEndian32
 0x1e0b0 func vesa_CheckResult hand checks the VESA return ax in DAT_002c29bc (al == 0x4f and ah == 0); called by vesa_SetMode / vesa_SetBank / vesa_GetModeInfo
 0x48ae9 func lvl15_Finish hand lvl15_QueueEvent(&DAT_000c98d8) and sets DAT_00211938 / DAT_0021193c = -1
 0x11d38 func pal_CopyFadeRows hand copies 16 rows from DAT_0016ab18 to DAT_0013ea08; called by pal_BuildTables
@@ -223,38 +199,24 @@
 0x1ab18 func opt_KeyDefineStart hand begins key definition: PTR_DAT_000cce08 = record+0xe, count +0x15 = 0, fn_41aa5c(widget), calls the record handler; string None
 0x1cc70 func txt_SetGlyphRect hand stores the glyph rect words (+0x10 / +0x12 etc.) into the glyph record; called by txt_DrawString
 0x1aae8 func opt_MenuDifficultyEnter hand enters the difficulty submenu: label PTR_DAT_000ccd40[DAT_002118a0] (Easy...), record +8 = PTR_DAT_000ccde6, +0xc = 1
-0x3e6e8 func ai_ClearTimer hand entity +0x88 = 0; provisional
-0x2e839 func lvl_EndCheckHead hand split head of 0x2e9a4 (switch on local -0x7c 0..5); provisional
 0x18d00 func debrief_StepCounter hand decrements DAT_00212588 when arg2 is set, returns it; called by debrief_Show
 0x3b8c1 func ai_ClearTimerB hand entity +0x88 = 0 after touching +0x60; provisional
 0x36840 func ai_Despawn hand clears the entity mask DAT_00211940 &= arg, +0x20 = 0, +0x22 = -1; provisional
 0x223e0 func hud_RestoreViewport hand restores backbuffer/width/height from DAT_000cefd8/d0/d4 (undo of hud_SetViewport); called by hud_Draw
 0x39085 func lvl15_QueueIfIdle hand lvl15_QueueEvent(&DAT_000c9ab8, 0) when DAT_00211954 == 0
-0x1c082 func file_Close hand fclose (FUN_0004bbed) with fatal_Error on a null handle; string Error creating1 %s
 0x3ffe2 func ai_ClampAnimFrame hand clamps the anim word at *(+0x2c) to 0x803c; provisional
 0x1b37c func opt_MenuEnterB hand menu entry: nothing handler, record +8 = PTR_DAT_000cceea, +0xc = 1
-0x46581 func ai_SetAnimPtr hand +0x2c = arg, writes 0xb6b0 to it; provisional
 0x1c1e4 func dbg_WaitEscape hand spins until key 0x1c (Enter) in DAT_002c251c then fn_41fd04(0); called by mem_Alloc / mem_AllocTracked / mem_Free on errors
 0x1b3df func opt_MenuEnterC hand menu entry: nothing handler(…,1), DAT_002c2430 = CX
-0x39565 func sfx_Play37Scaled hand snd_Command(0xc037, (d+0x100)*0x7f>>9): sfx 0x37 with distance volume; provisional
 0x38005 func ai_InitFlyer hand entity +0x20 = 0xff, +0x1c = 0x8000; provisional
 0x1c974 func dpmi_SegOffToLinear hand (seg<<4) + off, masked to 20 bits
-0x49372 func sfx_Play36 hand snd_Command(0xb036, v*0x7f>>8); provisional
 0x3e783 func ai_SetState hand +0x54 = arg, +0x6c = 0x8000; provisional
-0x3dae8 func fx_SpawnAtEntity hand FUN_00023f38(ent +0x30, +0x34, ...) (a __CHK stub still, fix after RepairBodies); provisional
 0x3716b func fx_SpawnAtEntityB hand FUN_00023f38(+0x30, +0x34, 0); provisional
-0x3ed98 func sfx_Play35 hand snd_Command(0xc035, v*0x7f>>8)
-0x37a90 func sfx_Play2e hand snd_Command(0xc02e, v*0x7f>>8)
-0x3779c func sfx_Play35Quiet hand snd_Command(0xc035, v*0x78>>8)
-0x37637 func sfx_Play4e hand snd_Command(0xc04e, v*0x78>>8)
-0x1cae4 func rd_BigEndian16 hand returns a big-endian word (glyph table); called by txt_DrawString
+0x1cae4 func txt_BigEndian16 hand returns a big-endian word (glyph table); called by txt_DrawString | DOS-B1 renamed from duplicate name rd_BigEndian16
 0x10058 func quan_AllocTables hand builds a 256-entry stack table and mem_Alloc(DAT_002c2320, DAT_002c2318*2); quantizer setup
 0x1f0c4 func vga_WaitRetrace hand spins on port 0x3da bit 3 (vertical retrace); called by vesa_SetDisplayStart
 0x1aad8 func opt_MenuEnterD hand menu entry: record +8 = PTR_DAT_000ccd98, +0xc = 1
 0x1f13c func vid_SetDirtyFlag hand DAT_002c3a16 = 1
-0x39424 func sfx_Play146 hand snd_Command(0xc146, vol)
-0x37582 func sfx_Play51 hand snd_Command(0xc051, vol)
-0x18573 func anim_StartThunk hand jumps to anim_Start
 0x1ab0c func opt_SetKeysDirty hand DAT_002c2510 = 1
 0x198b0 func grm_RequestRestart hand DAT_00212954 = 1
 0x12190 func level_LoadPalettes hand loads the per-world palettes (waste.pal/.pl2, w_obj, back_w1, disppc; tables DAT_000cc6b8.. indexed by world DAT_00138dc4) into DAT_00197398 / DAT_00197538 and tints them (pal_TintBuffer 0x80)
@@ -268,9 +230,8 @@
 0x12a38 func model_LoadWalker hand loads walker.lm2 / walker.dlt (DAT_000c5fc8 / DAT_000c5fcc), objects.obj, obj_rocket01.lm2 ... via lm2_Link
 0x1c328 func mem_CheckLeaks hand walks the alloc lists DAT_002c258c / DAT_002c2590 / DAT_002c2594: error: %d fastallocs fuckup / alloc check ok / error free miss; called by game_CloseDown
 0x11598 func level_LoadWorldArt hand loads w_obj.bob (DAT_00138de8), glb_obj.bob (DAT_00138df0), credscr.gfx per world (tables DAT_000cc730 / DAT_000cc744); skipped for level 15
-0x1cd2c func txt_LoadFont hand loads a font file into DAT_002c3980 (FUN_0001cccc first), glyph count from rd_BigEndian16(+0x40); DAT_002c38f4
+0x1cd2c func txt_LoadFont hand loads a font file into DAT_002c3980 (FUN_0001cccc first), glyph count from rd_BigEndian16(+0x40); DAT_002c38f4 | merged DOS-B1 the cut 0x1cdb0 txt_DrawString (3-pass loop over glyph records (FUN_0001cae4 lookup in table DAT_002c3980, FUN_0001caf8 per glyph); provisional, asm stack args)
 0x12ae4 func model_LoadSubwalk hand loads subwalk.lm2 / subwalk.dlt (tables PTR_s_subwalk_lm2_000c661c) when DAT_00138dc8 is set, lm2_Link
-0x3f8e8 func ai_HitReaction hand snd_Command(0xc123) then flag checks on +0x1d / 0xc000 mask, uses DAT_00211fc8; provisional
 0x116c0 func level_LoadWalkMap hand loads <world>.wlk (name table DAT_000cc71c[DAT_00138dc4]) into DAT_00143828, rd_BigEndian32InPlace, sets DAT_00211ec8/ecc pointers
 0x17d98 func afterlevel_PickNextLevel hand difficulty record DAT_002124a0*0x2c: next level from +0xc9118 or, when DAT_002125d0==0, +0xc911a (DAT_002125c8==1: +0xc911c); writes DAT_002124a0 and DAT_000cef5c; called by state_AfterLevel
 0x1df88 func cd_PlayTrack hand stores the track in DAT_002c3986, cd_NextTrack then cd_Command(3); called by state_AfterLevel
@@ -298,7 +259,7 @@
 0x17478 func wlk_ProbeAround hand samples FUN_000173f8 at (x, y) and the 6 neighbours at radius cx; 0x7f -> -0x100
 0x135ac func player_UpdateCell hand (was fn_4135b8) player +0x1c/+0x20 = cell coords ((pos >> 16) - 0x7c) >> 3; scroll when the cell moved by < 0x20
 0x3aca4 func ai_t10_Update hand update slot (+0x44) for entity types 10, 16, 27 (table 0xc6e6c rows, col 1): state at +0x74 from the +0x16 command flags 0xc000, ai_AimAtTarget x2, fx_Spawn x4, snd x3; provisional
-0x3f80f func ai_t20_Update hand update slot for type 20: state +0x84, ai_TurnToward x3 toward math_Atan2(player DAT_00211ef8/efc - pos), fx_Spawn x2; provisional
+0x3f80f func ai_t20_Update hand update slot for type 20: state +0x84, ai_TurnToward x3 toward math_Atan2(player DAT_00211ef8/efc - pos), fx_Spawn x2; provisional | merged DOS-B1 the cut 0x3f8e8 ai_HitReaction (snd_Command(0xc123) then flag checks on +0x1d / 0xc000 mask, uses DAT_00211fc8; provisional)
 0x35ce8 func ai_t05_Update hand update slot for type 5: when dead (+0x20 < 0) slides on with speed decaying *0x30>>6 and spawns fx x4; provisional
 0x39b25 func ai_t12_Update hand update slot for types 12, 13, 28, 29: FUN_000397e9(ent) when flag == 0, dead branch, obj_Spawn; provisional
 0x45f42 func ai_StaticShooter_Update hand pointer at 0xc692c; +0x78 shot countdown (0x40), DAT_00211d24 table[+0xa], math_Atan2 toward the player or DAT_00211fc8, map_GetCell; provisional
@@ -333,7 +294,7 @@
 0x37bac func ai_t11_Update hand provisional: update slot of types 11 and 23; heading chase (+0x14 vs +0xc), snd_VolumeAtPos x2, 0x37a3d, obj_Spawn
 0x368ef func ai_Pointer_c6db0_Update hand provisional: dying (+0x1d sign) spawns fx 2 every 8 ticks with random offsets; 0x3688f, obj_Spawn
 0x42a11 func ai_Pointer_c6a2c_Update hand provisional: DAT_00211944 gate, moves along cos table 0x1b8a6a by +0x5c speed, snd x3, lvl15_QueueEvent x2, 0x4289f
-0x25064 func obj_CullFar hand per-frame sweep of 4 of the 0x60 entity slots (DAT_0012e400, 0x90 b each, cursor DAT_00212428): far from listener/player = stop sound +0x8c and free to DAT_0012c798; callers game_UpdateFrame level_PlayerTriggers
+0x25064 func obj_CullFar hand per-frame sweep of 4 of the 0x60 entity slots (DAT_0012e400, 0x90 b each, cursor DAT_00212428): far from listener/player = stop sound +0x8c and free to DAT_0012c798; callers game_UpdateFrame level_PlayerTriggers | merged DOS-B1 the cut 0x25485 ent_AimAtTarget (turns an entity +0x16 angle toward its target with math_Atan2; type table DAT_000c6e64); real body 0x25064..0x25b40, one prologue
 0x33600 func ai_t07_Update hand provisional: update slot of type 7; aims at player DAT_00211ef8 or second target DAT_00211fdc, ai_ChaseUpdate x2, fx_Spawn, snd_VolumeAtPos
 0x44c23 func ai_Pointer_c68f0_Update hand provisional: ai_SteerToTarget x2, 0x3bf41 anim 0x2c, countdown +0x60, snd_VolumeAtPos, obj_Spawn
 0x45c6b func ai_StaticShooter_Anim hand anim-script stepper: timer +0x60 += DAT_002125a8, reads frame/sprite shorts at script ptr +0x5c (-8, -2); caller ai_StaticShooter_Update
@@ -352,13 +313,13 @@
 0x3de2a func ai_Pointer_c69d0_Update hand provisional: ptr 0xc69d0; twin of ai_Pointer_c69b0_Update with phases <5; 0x3d854, snd_VolumeAtPos, obj_Spawn
 0x390a3 func ai_SeekPoint hand provisional: ptr 0xc6a6c; steers toward goal +0x70/+0x74 (math_Atan2 near/far, skipped while +0x60==0x14), map_GetCell, 0x38f1b; caller ai_StrafeMove
 0x436fc func ai_HomeSettle hand provisional: after +0x84 > 0xa0 ticks snaps listener y DAT_00211efc to DAT_00211974 and eases +0x54/+0x58 toward cell height-0x400; callers 0x43dad ai_HomeOnTarget
-0x24283 func snd_PlayTerrainHit hand (x, y, mask, n): walks zone table DAT_002123d4 / list 0x2121b4 (threshold +2, mask [1]), plays 0xc038 at snd_VolumeAtPos, 0xc146, 0xb036/0xb037, 0xb000+entry; callers fx_UpdateAll ai_Hover ai_HomingMove ai_FacePlayer 0x30331 0x305ae
+0x24283 func snd_PlayTerrainHit hand (x, y, mask, n): walks zone table DAT_002123d4 / list 0x2121b4 (threshold +2, mask [1]), plays 0xc038 at snd_VolumeAtPos, 0xc146, 0xb036/0xb037, 0xb000+entry; callers fx_UpdateAll ai_Hover ai_HomingMove ai_FacePlayer 0x30331 0x305ae | merged DOS-B1 the cut 0x243e6 timer_CallEntry (calls a timer entry callback (+0xc) with the elapsed count (DAT_002123d8 - entry stamp); returns 2; split body)
 0x28006 func player_UpdateB hand provisional: second per-tick player routine (gate DAT_00212434): vehicle table 0xcd358 (12 b/row by +0x6a), 0x27903, wlk_ProbeAround, demo_PlayerUpdate; callers fn_412b64 fn_42d968 level_PlayerTriggers
 0x483af func fx_SpawnInRect hand (x1, y1, x2, y2, count, kind): spawns count/2 random fx in the rect (coords snapped to 0x20), map_GetCell, debug string changegndpnt; 13 callers incl lvl_EndCheckHead sfx_Play36 caseD_4
 0x3aa8e func ai_t10_Think hand think slot (col 0) of types 10 16 27: when within dist2 400 of target +0x78/+0x7c swaps heading +0xa/+0xc and picks a new target from DAT_00211d24 table; math_Atan2, 0x3a8b6
 0x39fb8 func ai_t12_Slot2 hand col-2 (+0x48) handler of types 12 13 28 29: sentinel 0x9998 at +0x88 decrements the linked cell +0x2c, below 0x8000 spawns fx 0x14 and sets death +0x20=0xe2 +0x18=0x20; fx_Spawn snd; caller 0x3a1ce
-0x49649 func lvl_Script_c9098_Update hand provisional: ptrs 0xc9098 0xc90f0; 0x494af then countdown DAT_00211948 while both players are beyond 0x13fffff (writes 3 to *DAT_0021194c), DAT_00211940 state 2 branch with DAT_00211968; obj_Spawn x2, lvl15_QueueEvent
-0x37397 func ai_Pointer_c6dd0_Update hand provisional: ptr 0xc6dd0; countdown +0x60 sets +0x1c=1, dying spawns fx with random +-0x40000 offsets every 8 ticks; fx_Spawn x2, snd_VolumeAtPos
+0x49649 func lvl_Script_c9098_Update hand provisional: ptrs 0xc9098 0xc90f0; 0x494af then countdown DAT_00211948 while both players are beyond 0x13fffff (writes 3 to *DAT_0021194c), DAT_00211940 state 2 branch with DAT_00211968; obj_Spawn x2, lvl15_QueueEvent | merged DOS-B1 the cut 0x498a8 nop_498a8 (provisional; empty)
+0x37397 func ai_Pointer_c6dd0_Update hand provisional: ptr 0xc6dd0; countdown +0x60 sets +0x1c=1, dying spawns fx with random +-0x40000 offsets every 8 ticks; fx_Spawn x2, snd_VolumeAtPos | merged DOS-B1 the cut 0x37582 sfx_Play51 (snd_Command(0xc051, vol)); merged DOS-B1 the cut 0x37637 sfx_Play4e (snd_Command(0xc04e, v*0x78>>8))
 0x38371 func ai_Pointer_c6b2c_Update hand provisional: ptr 0xc6b2c; (ent, phase) phase 0 emits a 10-short sprite record at DAT_000cf0e4 (frame 0x19, pos>>12 +0x20/-0x70); callers 0x38580 0x3876c 0x3879c
 0x29c99 func player_WeaponSoundTick hand provisional: per DAT_002125c0 tick steps player +0xd2 counter and plays weapon sounds 0xc21e 0xc221 0xc223 0xc224 by phase (0x200/0x300/0x330/0x360/0x390/0x400); callers caseD_1 fn_42b6e8
 0x3c83b func ai_Pointer_c6bd0_Update hand provisional: ptr 0xc6bd0; heading delta via 0x3c67f, countdown +0x60 phases <8, snd_VolumeAtPos, obj_Spawn
@@ -381,11 +342,11 @@
 0x4595f func ai_Turret_Update hand update slot (col 1) of types 26 31-36: dying plays 0xc035 at snd_VolumeAtPos and spawns fx 0x14 at heading-0x280; else ai_Turret_Think; fx_Spawn x2
 0x305ae func ai_Bounce_UpdateA hand provisional: ptr 0xc6e0c; integrates pos by +0x70/+0x74 >>1 and height by +0x78>>10 with damping x0x41>>6, snd_PlayTerrainHit on landing, 0x30226 x2, map_GetCell; caller 0x30701
 0x30331 func ai_Bounce_UpdateB hand provisional: ptr 0xc6e2c; twin of ai_Bounce_UpdateA with damping x0x21>>5; caller 0x30484
-0x49221 func lvl_Script_t62_Think hand provisional: think slot (col 0) of type 62: stops sounds 0xc12b 0xc128, 0x485c8(ent,0x23), DAT_00211950=2, fx_SpawnInRect x5 over fixed map rects (0x2c0..0x6a0), snd_VolumeAtPos
+0x49221 func lvl_Script_t62_Think hand provisional: think slot (col 0) of type 62: stops sounds 0xc12b 0xc128, 0x485c8(ent,0x23), DAT_00211950=2, fx_SpawnInRect x5 over fixed map rects (0x2c0..0x6a0), snd_VolumeAtPos | merged DOS-B1 the cut 0x49372 sfx_Play36 (snd_Command(0xb036, v*0x7f>>8); provisional)
 0x48c5e func lvl_Script_c9090_PickZone hand provisional: (ent, ?) compares ent +0x14/+0x18 against fixed map points (0x2d0 0x610 / 0x4f0 0x6b0), returns the nearest zone index; caller lvl_Script_c9090_Update
 0x494af func lvl_AmbientSoundTick hand ambient loop fade: DAT_00211978/7c counters, snd 0xc120 volume ramp (floor 0xaa, level DAT_000cef5c 9 special), 7 snd_Command; callers lvl_Script_c9098/c90a0_Update 0x49e6f
 0x3e55a func ai_t21_Think hand think slot (col 0) of type 21: dies on cell 0x1940 left of it, countdown +0x50 then spawns while entity count DAT_0012c79c < 0x2d; obj_Spawn, map_GetCell; caller 0x3e69e
-0x46ed7 func ai_Pointer_c686c_Update hand provisional: ptr 0xc686c; dying advances DAT_00211954 and spawns random fx (type 2..5) in +-0xc0000 around it; fx_Spawn; caller 0x48223
+0x46ed7 func ai_Pointer_c686c_Update hand provisional: ptr 0xc686c; dying advances DAT_00211954 and spawns random fx (type 2..5) in +-0xc0000 around it; fx_Spawn; caller 0x48223 | merged DOS-B1 the cut 0x470d0 ai_Boss_Update_frag (provisional; 3973-byte fragment with unaff_EBP (lost prologue): fx_Spawn bursts, ai_BigEntityMove, distances to both players, DAT_00212408 / DAT_00211950 / DAT_00211968 gates, sound 0xc11f, DAT_002125); one prologue for 0x46ed7..0x48055
 0x3bf41 func ai_SetAnimTowardPlayer hand (ent, anim): picks player 2 DAT_00211fc8 when +0x14 flags 0xc000==0x8000 else player 1 0x211ee4, math_Atan2 x16 scaled, writes facing +0x38/+0x3a from cos table 0x1b8a6a and anim +0x1c; callers ai_Pointer_c68f0/c6ab0_Update 0x3c07e 0x44bb2
 0x46690 func ai_BigEntityAimPoint hand provisional: (shot, ent) returns the aim point: frame table DAT_00211d24 entry when +0x70 mode low nibble==6 and +0x71 high nibble clear, else shot +0x14/+0x18; math_Atan2; caller 0x470d0
 0x2f334 func ai_AnimNext hand advances the entity animation: frame table DAT_00211d24 (8 b per frame, +6 = script offset), script bytes 0 end / 1 goto / ... set +0xc next frame, +0xa previous; 20+ callers (ai_Attack ai_RandomFire ai_t*_Think)
@@ -396,7 +357,7 @@
 0x385f4 func ai_Pointer_c6b38_Die hand provisional: ptr 0xc6b38; sets +0x20=0xf6 +0x18=0xf, 3 fx type 2 around the body, snd at snd_VolumeAtPos, debug changegndpnt; caller 0x38810
 0x3d69e func ai_Pointer_c6b54_Slot2 hand provisional: ptr 0xc6b54; sentinel 0x8291 at +0x88 -> pulls +0x70/+0x74 toward DAT_00212430 +0x36/+0x38 (x0x200), snd_VolumeAtPos x2
 0x41536 func ai_t19_Slot2 hand provisional: col-2 (+0x48) handler of type 19: sentinel 0x8291 at +0x88 -> pulls +0x60/+0x64 toward DAT_00212430 +0x36/+0x38 (x0x20), timer +0x6c=0x14, snd
-0x2deec func player_ClampToMap hand clamps the player entity DAT_00211910 pos +0xa/+0xc to 0..DAT_00138dcc-1 and walks the entity list DAT_0012c790; caller fn_42b6e8
+0x2deec func player_ClampToMap hand clamps the player entity DAT_00211910 pos +0xa/+0xc to 0..DAT_00138dcc-1 and walks the entity list DAT_0012c790; caller fn_42b6e8 | merged DOS-B1 the cut 0x2dffb lvl_ScanObjectTypes (iterates objects checking type record 0xc4f9c[type*0x14] flag byte +0xa bit 2; split tail of 0x2e9a4; provisional); merged DOS-B1 the cut 0x2e16d player_Heal (player entity DAT_00211910: +0x70 (health) += 0x20 capped at +0x74 (max); falls into the lvl switch default); merged DOS-B1 the cut 0x2e839 lvl_EndCheckHead (split head of 0x2e9a4 (switch on local -0x7c 0..5); provisional); merged DOS-B1 the cut 0x2e85d lvl_EndCheckTail (split tail of 0x2e9a4 (switch on local -0x7c, snd_Command(0xc227,0x7f) sfx 0x227 full volume); provisional)
 0x3475f func ai_t06_Update hand update slot (col 1) of types 6 and 30: dying counts +0x18, every 8 ticks past -0x36 picks 0x345ff (type 6) / 0x346ea, 0x44fd0, fx_Spawn
 0x43396 func cut_Leave hand restores the player after a cutscene: fn_42ff64 on DAT_002118f0, player pos from DAT_00211968..74 saved by cut_Enter, map_GetCell x3, lvl15_QueueEvent; callers state_InGame 0x4a033
 0x31341 func ai_t00_Think hand think slot (col 0) of type 0: cell change -> snd 0xc03c at snd_VolumeAtPos, anim +0x1c=-0x20-random bit, +0x18=2
@@ -419,7 +380,7 @@
 0x30226 func ai_Bounce_Hit hand (ent, kind): kind 1 plays 0xc031 and a second sound at snd_VolumeAtPos, fx_Spawn; checks owner +0x24 == player 1 0x211ee4 / player 2 DAT_00211fc8; callers ai_Bounce_UpdateA/B 0x302f9 0x304fb 0x30576 0x30778
 0x427cd func ai_t18_Hit hand hit slot (col 3) of types 18 22: 0xc03c at snd_VolumeAtPos, fx 3 at heading-0x300, +5 += 2, anim +0x1c=-0x20-random, +0x20=0xff
 0x42e1c func ai_Pointer_c6a0c_Spawn hand provisional: ptr 0xc6a0c; when DAT_00211940==-1 copies heading from the entity DAT_00211948 (+4 -0x4147), sets +0x58=0 +0x5c=0xfa, DAT_00211940=-2; snd; caller 0x4325f
-0x33d40 func ai_t07_Slot2 hand col-2 (+0x48) handler of type 7: sentinel 0x8291 at +0x88 spawns fx 5 at a random offset with speed from +0x50; snd at snd_VolumeAtPos
+0x33d40 func ai_t07_Slot2 hand col-2 (+0x48) handler of type 7: sentinel 0x8291 at +0x88 spawns fx 5 at a random offset with speed from +0x50; snd at snd_VolumeAtPos | merged DOS-B1 the cut 0x33de8 ai_RandomHeading (+0xa = frame-based random + (+0x54>>8) - 0x100, +0xc = random - 0x140; provisional)
 0x37ae5 func ai_t11_Think hand think slot (col 0) of types 11 and 23: bobs heading +0xe by 11/256 of cos(+0x50 += 8) around base +0x12, +0x58=0x40 +0x60=0x14, 0x37a3d, map_GetCell; caller 0x37f78
 0x33e7a func ai_PathNextWaypoint hand loads the next waypoint from the path table DAT_00211d28 (4 b per point: short x, short y) by index +0x60 into +0x70/+0x74, +0x78 = math_Atan2 heading; callers portal_SeekStep 0x33f3b
 0x41a54 func ai_DriftStep hand integrates pos by +0x60/+0x64 >> 6, updates cell +6 via map_GetCell and height +4; callers caseD_0 0x42641
@@ -436,15 +397,15 @@
 0x48665 func lvl_CheckPlayersDead hand ptr 0xc90c8; when DAT_00211948==0 and a player flag (DAT_00211f6c / DAT_00212050 >>16 != 1) sets the end code DAT_0021194c = 0x73 (player 1) / 0x72 (player 2) and DAT_00211948=1; callers 0x49e6f 0x4a3d2 0x4b081
 0x3e367 func ai_VelocityToTarget hand ptr 0xc69ec; picks the target player record from +0x14 flags (0x8000 = player 2 DAT_00211fc8 else 0x211ee4), math_Atan2 to it, sets velocity +0x38/+0x3a from the cos/sin tables 0x1b8a6a/0x1b8e6a (>>4)
 0x49920 func lvl_Script_c79f0_Update hand provisional: ptrs 0xc79f0 0xc7a00; DAT_00211ed0/d4/d8 = 0x28/0x40/1, lvl_SpawnRectFx(rec,0x32), counter DAT_0021195c++, shake DAT_002125dc=200, on the second one with DAT_00211944>0 and DAT_00211940!=2 queues a lvl15 event
-0x3236b func ai_t01_Hit hand hit slot (col 3) of types 1 2 3: when type +6 == 2 counts down DAT_0021193c and at 0 sets DAT_00212400/404 = 0x39a/0x29e and lvl15_QueueEvent(0xc98f0); death sound 0xc03c at snd_VolumeAtPos, +0x18=2
+0x3236b func ai_t01_Hit hand hit slot (col 3) of types 1 2 3: when type +6 == 2 counts down DAT_0021193c and at 0 sets DAT_00212400/404 = 0x39a/0x29e and lvl15_QueueEvent(0xc98f0); death sound 0xc03c at snd_VolumeAtPos, +0x18=2 | merged DOS-B1 the cut 0x32414 ai_SetHeightRange (+0x1c = hi - lo, +0x84 = map_GetCell(pos); provisional)
 0x388c9 func ai_Pointer_c6a4c_Update hand provisional: ptr 0xc6a4c; caller 0x38e8b; first call picks a flight profile by +0x58 (heading 0xc00 / 0x398, step +0x60, length +0x64, height +4 += 0x334 / 0x3ae), then a state machine on +0x68 flying along cos/sin with +0x64 shrinking by 4
 0x3826e func ai_Pointer_c6bb8_Die hand provisional: ptr 0xc6bb8; fx 2 at height-0x300, sound 0xc031, +0x20=0xf6 +0x18=0xf, changegndpnt
 0x42641 func ai_t18_Update hand update slot (col 1) of types 18 22: while +0x20 anim < 0 drifts via ai_DriftStep with +0x68 relaxing toward -19000 and dies below height -0x2800; else copies the target flags +0x14 into +0x84 and runs 0x41b14
-0x3a781 func ai_t09_Init hand init slot (col 7) of types 9 15 26: +8 = 0x1b on levels 6 7 11 else 10, spawn position saved in +0x50/+0x54, cell in +0x58
+0x3a781 func ai_t09_Init hand init slot (col 7) of types 9 15 26: +8 = 0x1b on levels 6 7 11 else 10, spawn position saved in +0x50/+0x54, cell in +0x58 | merged DOS-B1 the cut 0x3a824 ai_InRange (returns whether dx*dx+dy*dy is under (radius-8)^2 of the target record; provisional)
 0x32d70 func ai_t15_Hit hand hit slot (col 3) of type 15: sound 0xc03c at snd_VolumeAtPos, +0x18=2 +0x20=0xa0, +0x50=-0xc0, +0x1c = -0x20 - (random&1), cell from map_GetCell
 0x3d7b6 func ai_Pointer_c6b58_Init hand provisional: ptr 0xc6b58; +0x20=0xce +0x18=0x32 +0x22=-1, random offsets +0x78 (random&0x3f-0x20) and +0x7c/+0x6c from the +0xe/+0x10 shorts minus 0x400 >>4 plus random
 0x485c8 func lvl_SpawnRectFx hand (rect record of shorts +2 x0 +4 y0 +6 x1 +8 y1, count): count < 0 means area*12/1024 capped at 50; fx_SpawnInRect; callers 0x244dc 0x2453d 0x493c4 0x498aa lvl_Script_c79f0_Update 0x49bc1
-0x37700 func ai_Pointer_c6df8_Die hand provisional: ptr 0xc6df8; sound 0xc11c, +0x22=-1 +0x20=0xd8 +0x18=2, fx 2 at height-0x280, changegndpnt
+0x37700 func ai_Pointer_c6df8_Die hand provisional: ptr 0xc6df8; sound 0xc11c, +0x22=-1 +0x20=0xd8 +0x18=2, fx 2 at height-0x280, changegndpnt | merged DOS-B1 the cut 0x3779c sfx_Play35Quiet (snd_Command(0xc035, v*0x78>>8))
 0x49bc1 func lvl_Script_c8028_Update hand provisional: ptrs 0xc8028..0xc8228 (9 script records); lvl_SpawnRectFx(rec,0x12), DAT_00211944++, at 8 two fx_SpawnInRect bursts, lvl15_QueueEvent(0xc9a7c), DAT_00212400=0x80
 0x2f465 func ai_AnimJumpFrame hand anim frame table DAT_00211d24: frame +10 takes the next-frame short +0xc, then follows the frame script at +6: if the first byte is nonzero the second byte is the frame to jump to; callers ai_AnimStep ai_InRange
 0x3a6e9 func ai_Pointer_c6b78_Die hand provisional: ptr 0xc6b78; sound 0xc02e at snd_VolumeAtPos, fx 2 at height, changegndpnt(x>>21,y>>21,7), +0x20=0
@@ -474,7 +435,7 @@
 0x173f8 func wlk_SampleCell hand (x, y shorts): signed char from the walk map: block from DAT_0012a762[(x>>5) + (y&0x7e0)*2] via DAT_00138e0c, 8x8 cell (x&0x18, y&0x18) then (x&7, y&7) within the 64-byte block at DAT_00138e04; caller wlk_ProbeAround
 0x3eea9 func ai_Pointer_c68b8_Die hand provisional: ptr 0xc68b8; sound 0xc035, fx 2 at height, +0x20=0 +0x22=-1; caller ai_FacePlayer
 0x3976f func ai_t11_Init hand init slot (col 7) of types 11 12 27 28: +0x74 = random&1, +6 = map_GetCell at spawn, heading +0xe=0x400, +0x68 = the linked cell short at +0x2c, +0x14 = +0x16
-0x44377 func ai_t24_Update hand update slot (col 1) of type 24: when the anim byte +0x20 is negative it is the death tumble: +0x20=0xce +0x18=0x32, velocity +0x70/+0x74 integrated with 63/64 damping and acceleration +0x64/+0x68 (31/32), spin +0x78 into heading, fall +0x84 += 0x60; hitting the ground (map_GetCell - 0x280) spawns fx 2 + sound 0xc02e; +0x1c cycles 2..0; else the live branch
+0x44377 func ai_t24_Update hand update slot (col 1) of type 24: when the anim byte +0x20 is negative it is the death tumble: +0x20=0xce +0x18=0x32, velocity +0x70/+0x74 integrated with 63/64 damping and acceleration +0x64/+0x68 (31/32), spin +0x78 into heading, fall +0x84 += 0x60; hitting the ground (map_GetCell - 0x280) spawns fx 2 + sound 0xc02e; +0x1c cycles 2..0; else the live branch | merged DOS-B1 the cut 0x443c7 ai_VehicleMove (integrates entity velocity (+0x70/+0x74) into position (+0x34/+0x38) with 63/64 damping; asm-mangled; provisional)
 0x40a70 func ai_t18_Init hand init slot (col 7) of type 18: ai_Attack(ent,0,0x14); when DAT_00212434==0 heading = math_Atan2 toward home +0x78/+0x7c, +0x84 = +0xc heading
 0x31118 func ai_t14_Update hand update slot (col 1) of type 14: while the anim byte +0x20 is negative counts it up (sound 0xc031 at 0) else runs 0x30dce
 0x30701 func ai_Bounce_Update hand ptr 0xc6e10; death count-up of +0x20 with sound 0xc02e at 0, else ai_Bounce_UpdateA
@@ -500,7 +461,7 @@
 0x49c8e func lvl_Script_c7f88_Update hand provisional: ptrs 0xc7f88 0xc8018 0xc8158 0xc8168 0xc8178; lvl_SpawnRectFx(rec,0x23), DAT_00211ed0/d4/d8 = 0x20/0x40/1, DAT_00211948++ and on the first queues lvl15 event 0xc9aa0
 0x463fa func ai_Pointer_c6930_Update hand provisional: ptr 0xc6930; when the target flags +0x14 are set and +0x84 == 0 copies them to +0x80 and arms +0x84 = 100; then ai_StaticShooter_Update
 0x3ee3f func ai_Pointer_c68a8_Hit hand provisional: ptr 0xc68a8; +0x84=400 +0x7c=0x200 +0x78=-0x1e, sound 0xc047 at snd_VolumeAtPos
-0x39a80 func ai_t12_Think hand think slot (col 0) of types 12 13 28 29: ai_t12_Anim when mode 0, +0x1c=0, cos sway of heading +0xe (11/256 of cos(+0x50 += 8)) around +0x12, +0x54=0
+0x39a80 func ai_t12_Think hand think slot (col 0) of types 12 13 28 29: ai_t12_Anim when mode 0, +0x1c=0, cos sway of heading +0xe (11/256 of cos(+0x50 += 8)) around +0x12, +0x54=0 | merged DOS-B1 the cut 0x39ae8 ai_InitWalker (entity init: +0xe = arg hi + off, +0x54 = 0, +0x60 = 0xf unless flag bit 0 at +8; provisional)
 0x34b14 func ai_t04_Think hand think slot (col 0) of type 4: ai_WanderStep; when the distance to the goal +0x78/+0x7c stops shrinking (+0x6c) picks a new random goal around the anim-frame-table point (DAT_00211d24 row +10: short x, y, radius at +2) with the random seeds DAT_00211d18/1c, ai_AnimNext 1 in 4, heading +0x60 = math_Atan2 to it
 0x3dbed func ai_Pointer_c69c8_Init hand provisional: ptr 0xc69c8; +0x60=100 +0x54=0x8000, no target (+0x84 = 0x80000000), height = cell
 0x44b4e func ai_Pointer_c68e8_Init hand provisional: ptr 0xc68e8; +0x60=0x96, ai_RandomFire(ent,0), +0x58 = math_Atan2 toward +0x7c/+0x80
@@ -511,7 +472,7 @@
 0x3688f func ai_Pointer_c6dac_Think hand provisional: ptr 0xc6dac; caller ai_Pointer_c6db0_Update; at +0x1c == 0 restarts +0x68 = -0x1b8, else +0x68++ and every 0x20 ticks +0x1c--
 0x312e1 func ai_Pointer_c6e68_Init hand provisional; record +8 init slot of 0xc6e60 (0xc6e68 is not the type-0 row, that is 0xc6e88 = ai_t00_Init 0x317e8); +0x70 = random&1, +6 = +4 = map_GetCell at spawn
 0x3dd9b func ai_Pointer_c69ac_Update hand provisional: ptr 0xc69ac; caller 0x3ddfa; ai_HeadingToTarget, +0x78=0x1e, +0x60 counts down to a floor of 0x96, +0x1c=0
-0x39506 func ai_Pointer_c6d18_Die hand provisional: ptr 0xc6d18; big death: +0x20=0, sounds 0xc036 0xc037 at half volume, shake 200, explosion-ring block DAT_0021243c..50 (pos, 0, 0x80, 100, -0x4000), fx 0x16 + two fx 0x14, DAT_00211ed0 += 0x40 DAT_00211ed4 += 0xa0 DAT_00211ed8 = 2, +0x22=-1
+0x39506 func ai_Pointer_c6d18_Die hand provisional: ptr 0xc6d18; big death: +0x20=0, sounds 0xc036 0xc037 at half volume, shake 200, explosion-ring block DAT_0021243c..50 (pos, 0, 0x80, 100, -0x4000), fx 0x16 + two fx 0x14, DAT_00211ed0 += 0x40 DAT_00211ed4 += 0xa0 DAT_00211ed8 = 2, +0x22=-1 | merged DOS-B1 the cut 0x39565 sfx_Play37Scaled (snd_Command(0xc037, (d+0x100)*0x7f>>9): sfx 0x37 with distance volume; provisional)
 0x38fcd func ai_Pointer_c6a68_Init hand provisional: ptr 0xc6a68; heading 0x400, +0x60=2, ai_PathNextWaypointC, height = cell - 0x1400
 0x48253 func ai_Pointer_c6874_Hit hand provisional: ptr 0xc6874; damage code +0x88 0x22 subtracts 0x28, 0x25 subtracts 0x50 from the linked cell short +0x2c; clears +0x88
 0x30c0a func ai_t14_Hit hand hit slot (col 3) of type 14: fx_SpawnExplosionRing, sound 0xc029 at half volume, +0x20=0
@@ -532,7 +493,7 @@
 0x3457b func ai_Pointer_c6b14_Hit hand provisional: ptr 0xc6b14; same as ai_Pointer_c6db4_Hit
 0x3e72e func ai_Pointer_c6948_Init hand provisional: ptr 0xc6948; +6 = +4 = map_GetCell at spawn, +0x54 = random&0x3f + 200, +0x6c=0x8000
 0x31710 func ai_t00_Slot2 hand col 2 of type 0: random seed += 5, +0x1c=0, +0x58 capped at 0x28, clears +0x88
-0x37a3d func ai_t11_Hit hand type table col 3 rows 11 and 23; sounds 0xc03c and 0xc02e, fx 2 at height minus 0x400, clears +0x20, +0x22 = -1
+0x37a3d func ai_t11_Hit hand type table col 3 rows 11 and 23; sounds 0xc03c and 0xc02e, fx 2 at height minus 0x400, clears +0x20, +0x22 = -1 | merged DOS-B1 the cut 0x37a90 sfx_Play2e (snd_Command(0xc02e, v*0x7f>>8))
 0x495f7 func lvl_Script_c9094_Update hand provisional; refs 0xc9094 0xc90ec; sets DAT_00212400/404 = 0x90/0x78, lvl15_QueueEvent(0xc9a40), DAT_002125d8 forced >= 1
 0x173a4 func map_ScrollRows hand provisional; copies 0x80 shorts of row (DAT_002125d4-10) in DAT_0013a5c8 down into the next 4 rows, bounded by DAT_0013c5c8
 0x3da7f func ai_Pointer_c69b8_Die hand provisional; sound 0xc032 then FUN_0003d9b4
@@ -550,7 +511,7 @@
 0x39678 func ai_Pointer_c6ce8_Init hand provisional; record +8 init slot; +0xe = 0x800, +4 = map_GetCell(pos) - 0xc80
 0x37fdc func ai_t17_Update hand type table col 1 row 17; DAT_00211954 == 0 sets +0x20 = 0xff and +0x1c = 0x8000, < 0 clears +0x20, > 0 sets +0x20 = 1 and runs ai_t11_Update
 0x2fce7 func ai_Pointer_c6ae8_Init hand provisional; record +8 init slot; +0x60 = 0xb4, +0x7c = 0x180 or 0x200 by DAT_002118a0
-0x46537 func ai_Pointer_c6868_Init hand provisional; record +8 init slot; singleton DAT_002119b4 = ent, +0x50 from the DAT_000c5fcc table by type, +0x2c points at own +0x74 = 0xb6b0
+0x46537 func ai_Pointer_c6868_Init hand provisional; record +8 init slot; singleton DAT_002119b4 = ent, +0x50 from the DAT_000c5fcc table by type, +0x2c points at own +0x74 = 0xb6b0 | merged DOS-B1 the cut 0x46581 ai_SetAnimPtr (+0x2c = arg, writes 0xb6b0 to it; provisional)
 0x32448 func ai_t14_Init hand type table col 7 row 14; +0x70 = random and 1, +0x78/+0x7c = own position
 0x48c15 func lvl_Script_c908c_Update hand provisional; camera target DAT_00212400/404 = 0x4e2/0x44c, DAT_0021193c = 0x40001068, lvl15_QueueEvent(0xc9908)
 0x4877e func lvl_Script_c9084_Update hand provisional; camera target DAT_00212400/404 = 700/0xee, DAT_0021193c = 8, lvl15_QueueEvent(0xc9860)
@@ -568,7 +529,7 @@
 0x304fb func ai_Pointer_c6e34_Hit hand provisional; record +0x14 hit slot; ai_Bounce_Hit(ent,1) when +0x60 < 1, then +0x60 = 10
 0x3879c func ai_Pointer_c6a90_Think hand provisional; record +0x10 think slot; bumps +0x20 when the byte at +0x20 is negative, then ai_Pointer_c6b2c_Update
 0x38580 func ai_Pointer_c6b30_Think hand provisional; record +0x10 think slot; same body as ai_Pointer_c6a90_Think
-0x393e3 func ai_Pointer_c6a74_Hit hand provisional; record +0x14 hit slot; clears +0x88, snd_Command(0xc146, snd_VolumeAtPos * 0x6e / 256)
+0x393e3 func ai_Pointer_c6a74_Hit hand provisional; record +0x14 hit slot; clears +0x88, snd_Command(0xc146, snd_VolumeAtPos * 0x6e / 256) | merged DOS-B1 the cut 0x39424 sfx_Play146 (snd_Command(0xc146, vol))
 0x3e51a func ai_t20_Init hand type table col 7 row 20; +4 = 0x1900, +0x1c = 0x8000, +0x50 = 0x14
 0x49f6a func lvl_Script_c90f4_Update hand provisional; lvl15_QueueEvent(0xc9b54), camera target DAT_00212400/404 = 0x270/400
 0x49f07 func lvl_Script_c90e4_Update hand provisional; lvl15_QueueEvent(0xc9ac4), camera target DAT_00212400/404 = 0x1f5/700
@@ -581,7 +542,7 @@
 0x450bb func ai_t24_Init hand type table col 7 row 24; +0x78/+0x7c = own position
 0x38040 func ai_Pointer_c6c88_Init hand provisional; record +8 init slot, also 0xc6ca8; +0x60 = (x + y) * 13 / 2^21
 0x3e69e func ai_t21_Update hand type table col 1 row 21; runs ai_t21_Think twice per tick
-0x3ed5e func ai_Pointer_c6958_Die hand provisional; record +0x18 die slot; sounds 0xc11d and 0xc035, fx 0x14 at height - 0x400 and fx 3 at +0x6c - 0x200 unless +0x6c == 0x8000, clears +0x20, +0x22 = -1, changegndpnt(cell, 10)
+0x3ed5e func ai_Pointer_c6958_Die hand provisional; record +0x18 die slot; sounds 0xc11d and 0xc035, fx 0x14 at height - 0x400 and fx 3 at +0x6c - 0x200 unless +0x6c == 0x8000, clears +0x20, +0x22 = -1, changegndpnt(cell, 10) | merged DOS-B1 the cut 0x3ed98 sfx_Play35 (snd_Command(0xc035, v*0x7f>>8))
 0x3a3bb func ai_Pointer_c6b6c_Update hand provisional; record +0xc update slot; ai_HeadingToTargetC then +0x78 = 0x28
 0x42de4 func ai_Pointer_c6a08_Init hand provisional; record +8 init slot; zeroes the position
 0x38205 func ai_Pointer_c6bb0_Think hand provisional; record +0x10 think slot; bumps +0x20 when the byte at +0x20 is negative
@@ -592,7 +553,7 @@
 0x4560a func ai_t25_Init hand type table col 7 rows 25 and 30-35; +0x60 = random then random += 0x1a
 0x3053f func ai_Pointer_c6e08_Init hand provisional; record +8 init slot; +0x22 = -1, +0x60 = 5
 0x301ef func ai_Pointer_c6e28_Init hand provisional; record +8 init slot; +0x22 = -1, +0x60 = 5
-0x40534 func ai_Pointer_c6acc_Update hand provisional; record +0xc update slot; turns heading +0xe toward (+0x64,+0x7c) by 0x10 steps, clears +0x88, FUN_0003ffff, when +0x6c < 0 fires ai_RandomFireB(ent,1) and rerolls +0x6c / +0x80
+0x40534 func ai_Pointer_c6acc_Update hand provisional; record +0xc update slot; turns heading +0xe toward (+0x64,+0x7c) by 0x10 steps, clears +0x88, FUN_0003ffff, when +0x6c < 0 fires ai_RandomFireB(ent,1) and rerolls +0x6c / +0x80 | merged DOS-B1 the cut 0x40568 ai_TurnToward (math_Atan2 toward (x,y) minus heading +0xc, clamps the turn to +-0x10 per tick; provisional)
 0x3492b func ai_t06_Slot2 hand type table col 2 rows 6 and 30; +0x50 -= 0x14 while above 100
 0x2f62f func ai_Pointer_c6818_Die hand provisional; shared +0x18 die slot of 10 records 0xc6818 0xc6838 0xc6858 0xc6898 0xc68d8 0xc6bf8 0xc6c18 0xc6c38 0xc6cd8 0xc6e58; clears +0x20, +0x22 = -1
 0x4835d func lvl_Script_c90c4_Update hand provisional; shared by 0xc90c4 0xc90cc 0xc90d4 0xc90dc; camera target DAT_00212400 = -2, DAT_00212404 = 0
@@ -652,7 +613,7 @@
 0x37f4c func ai_t17_Hit hand type table col 3 row 17; wraps ai_t11_Hit
 0x36d1f func ai_Pointer_c6dc8_Init hand provisional; record +8 init slot; wraps ai_Pointer_c6de8_Init
 0x49e6f func lvl_Script_c90d0_Update hand provisional; lvl_CheckPlayersDead then lvl_AmbientSoundTick
-0x429c0 func ai_Pointer_c6a28_Init hand provisional; record +8 init slot; +0x64 = 0, ai_Pointer_c6a2c_NextWave, +0x7c/+0x80 = own position
+0x429c0 func ai_Pointer_c6a28_Init hand provisional; record +8 init slot; +0x64 = 0, ai_Pointer_c6a2c_NextWave, +0x7c/+0x80 = own position | merged DOS-B1 the cut 0x429e8 ai_ResetTarget (FUN_0004289f then target +0x7c = +0x30, +0x80 = ...; provisional)
 0x396ea func ai_Pointer_c6cf0_Think hand provisional; record +0x10 think slot; empty
 0x396c5 func ai_Pointer_c6cec_Update hand provisional; record +0xc update slot; empty
 0x3948b func ai_Pointer_c6d10_Think hand provisional; record +0x10 think slot; empty
@@ -682,16 +643,16 @@
 0x2fcc3 func ai_Pointer_c6d34_Hit hand provisional; record +0x14 hit slot; empty
 0x2f5d3 func ai_Pointer_c6808_Nop hand provisional; shared empty handler in the +8 and +0x14 slots of 10 records 0xc6800 0xc6820 0xc6840 0xc6880 0xc68c0 0xc6be0 0xc6c00 0xc6c20 0xc6cc0 0xc6e40
 0x177b8 func map_GetCellB hand provisional; second 64x64 cell layer at DAT_0012a762 indexed by (x >> 21 and 0x3f) + (y >> 21 and 0x3f) * 64, returns the high short; ai_Pointer_c6d6c_Update compares it with 0x87
-0x3dad0 func ai_Pointer_c6978_Die hand provisional; record +0x18 die slot; sound 0xc032 then FUN_0003d9b4
-0x317e8 func ai_t00_Init hand type table col 7 rows 0-2 (the player types); +0x70 = random and 1, +0x78/+0x7c = own position; type 3 on level 0 queues the 0xc98c0 cutscene (camera target 0x39a/0x29e) by DAT_0021193c
+0x3dad0 func ai_Pointer_c6978_Die hand provisional; record +0x18 die slot; sound 0xc032 then FUN_0003d9b4 | merged DOS-B1 the cut 0x3dae8 fx_SpawnAtEntity (FUN_00023f38(ent +0x30, +0x34, ...) (a __CHK stub still, fix after RepairBodies); provisional)
+0x317e8 func ai_t00_Init hand type table col 7 rows 0-2 (the player types); +0x70 = random and 1, +0x78/+0x7c = own position; type 3 on level 0 queues the 0xc98c0 cutscene (camera target 0x39a/0x29e) by DAT_0021193c | merged DOS-B1 the cut 0x31800 ai_Idle (sets target (+0x78/+0x7c) to own position (+0x30/+0x34), +0x70 = frame & 1; provisional)
 0x3ffff func ai_RecoilAnim hand provisional; called by ai_AimFire and ai_TurnToward; while +0x68 counts down swings the heading +0xe by phase +0x54 (-0x60/-0x30, +0x60/+0x30, -0x380, +0x1c0) and bumps the frame +0x1c; at the end +0x1c = frame from the anim record +0x5c - 8 and heading masked even
-0x3e6d9 func ai_t21_Slot2 hand type table col 2 row 21; clears +0x88 only
+0x3e6d9 func ai_t21_Slot2 hand type table col 2 row 21; clears +0x88 only | merged DOS-B1 the cut 0x3e6e8 ai_ClearTimer (entity +0x88 = 0; provisional)
 0x349eb func ai_t03_Init hand type table col 7 row 3; +0x78/+0x7c = own position
-0x392dc func ai_Pointer_c6a70_Think hand provisional; record +0x10 think slot; bumps the anim byte +0x20 when negative and at frame -0x1a spawns fx offset by cos/sin of the heading
+0x392dc func ai_Pointer_c6a70_Think hand provisional; record +0x10 think slot; bumps the anim byte +0x20 when negative and at frame -0x1a spawns fx offset by cos/sin of the heading | merged DOS-B1 the cut 0x392e8 ai_StrafeMove (moves an entity along sin/cos (DAT_001b8a6a) by +0xc heading; spawns via FUN_00024f0c when state byte == -0x1a; provisional)
 0x34c78 func ai_t04_Update hand type table col 1 row 4; while the anim byte < 2: when +0x54 <= 0 rerolls +0x60 from the target flags +0x14 minus 0x40 plus random and 0x7f, else counts +0x54 down
-0x3a3f5 func ai_Pointer_c6b70_Update hand provisional; record +0xc update slot; copies target flags +0x14 into +0x84, ai_HeadingToTargetC, when off by more than 0x7f resets the frame +0x1c and counts +0x78 down
-0x454b4 func ai_t25_Think hand type table col 0 row 25; ai_MeleeApproachB then +0x80 = 0
-0x3d9b4 func ai_DieGroundFx hand provisional; shared death tail: changegndpnt(cell, 0xf), fx 0x14 at height - 0x280, clears +0x20, +0x22 = -1; called by ai_Pointer_c69b8/c69d8/c6978_Die and fx_SpawnAtEntity
+0x3a3f5 func ai_Pointer_c6b70_Update hand provisional; record +0xc update slot; copies target flags +0x14 into +0x84, ai_HeadingToTargetC, when off by more than 0x7f resets the frame +0x1c and counts +0x78 down | merged DOS-B1 the cut 0x3a400 ai_TurnAndChase (entity +0x78 countdown (max 0x28), FUN_0003a2cf angle diff; provisional)
+0x454b4 func ai_t25_Think hand type table col 0 row 25; ai_MeleeApproachB then +0x80 = 0 | merged DOS-B1 the cut 0x454be ai_ResetPhase (calls FUN_000450f7(ent, arg) then clears +0x80; provisional)
+0x3d9b4 func ai_DieGroundFx hand provisional; shared death tail: changegndpnt(cell, 0xf), fx 0x14 at height - 0x280, clears +0x20, +0x22 = -1; called by ai_Pointer_c69b8/c69d8/c6978_Die and fx_SpawnAtEntity | merged DOS-B1 the cut 0x3d9be ai_ChangeGroundPoint (debug print changegndpnt no %d %d %d %d, spawns type 0x14 object 0x280 above (FUN_00024f0c), clears +0x20; provisional)
 0x1c8fc func counter_IncCd068 hand provisional; increments the dword at PTR_DAT_000cd068
 0x1f560 func mem_PassThrough hand provisional; returns its argument; called by mem_Alloc, mem_AllocTracked, mem_Free, prof_PrintReport
 0x1bc62 func thunk_4b7be hand provisional; calls FUN_0004b7be with the second argument
@@ -701,9 +662,7 @@
 0x49c8a func nop_49c8a hand provisional; empty
 0x1baf1 func nop_1baf1 hand provisional; empty
 0x1b43f func nop_1b43f hand provisional; empty
-0x498a8 func nop_498a8 hand provisional; empty
 0x1000c func menu_InitStringPtrs hand provisional; fills DAT_000ccdee/ce3c/ce52/cf0c/cf8e from the PTR_ tables at 0xccccc/0xccc78/0xccd40/0xccd50/0xccd38 indexed by DAT_002c242e and DAT_00212974; the 17 data refs to 0x1000c are probably the constant 0x1000c
-0x470d0 func ai_Boss_Update_frag hand provisional; 3973-byte fragment with unaff_EBP (lost prologue): fx_Spawn bursts, ai_BigEntityMove, distances to both players, DAT_00212408 / DAT_00211950 / DAT_00211968 gates, sound 0xc11f, DAT_002125a8 / DAT_002125c0 shake counters
 0x40010 func lvl_Script_c8f44_Update hand provisional; 1264-byte body with unaff_EBP (lost prologue); record 0xc8f44; map_GetCell at the entity position, nested 4-way switches
 0x4c320 func AIL_quick_load_and_play hand Miles wrapper, debug-logs its own name string
 0x4c440 func AIL_quick_status hand Miles wrapper, debug-logs its own name string
@@ -1002,7 +961,6 @@
 0x5716a func crt_HeapFree hand Watcom near heap free: header word at block-4 (bit 0 = used), coalesces with the following free block and fixes the rover +0xc of the heap segment
 0x61ba5 func crt_ParseCmdArgs hand Watcom startup argv builder: splits the command tail on blanks and tabs with double-quote grouping
 0x4a3fb func lvl_EngineHumTick hand level helper (shared by lvl15_CountdownUpdate, lvl_BeaconSequenceUpdate, lvl_ExitPointUpdate): every 14 ticks sends snd 0xc11c with the accumulated level DAT_00211984 * 100 / 256, provisional
-0x526d0 func AIL_unnamed_526d0 hand Miles wrapper (log entry / result skeleton) whose name string was not recovered, callee from FUN_00059fc0, provisional
 0x67c52 func crt_TzParseRule hand Watcom tzset helper: parses a daylight rule (J julian, M month.week.day, else day number) into the rule record +0x20
 0x5bd60 func ail_MdiReleaseOnce hand mirror of ail_MdiInitOnce (same once flag DAT_000ce8dc): when DAT_000ce8dc is set runs FUN_00057b10 and a long run of FUN_00057ad0 slot releases
 0x5a840 func ail_DigLoadDriverVectors hand AIL_API_install_DIG_driver_file helper: copies 6 dwords of the driver descriptor, resolves the real-mode segment:offset of the driver entry from the header +0xc
@@ -1011,7 +969,6 @@
 0x68ec2 func crt_UnhookInt1B hand Watcom runtime: restores the saved int 1Bh vector through DPMI 0x201 and relinks the break handler chain PTR_FUN_000cd7b0
 0x68d0c func crt_UnhookInt23 hand Watcom runtime: restores the saved int 23h vector through DPMI 0x201 and relinks the break handler chain PTR_FUN_000cd7b0
 0x57960 func ail_LoadDriverFile hand Miles driver file loader: FUN_0005882b opens the driver, size and reads it with FUN_0005894f, closes with FUN_00058925, default buffer from FUN_00057d50, error code in DAT_000cdae0
-0x527e0 func AIL_unnamed_527e0 hand Miles wrapper (log entry / result skeleton) whose name string was not recovered, called by snd_InitMiles, provisional
 0x618e3 func crt_asctime hand Watcom asctime: day and month names from the packed table s_JFMAMJJASOND..., format Www Mmm dd hh:mm:ss yyyy
 0x61e8b func crt_FpuEmuFormatDispatch hand Watcom 80-bit float emulation: dispatches on the format byte +0x15 of the conversion record (0x45..0x48 = E F G and the int conversions) and clears the +0xc result
 0x67f9f func crt_TzRuleToDay hand Watcom tzset helper: converts a daylight rule record into a day of year using the year table DAT_000c4ebc (leap years from FUN_00067f64)
@@ -1044,13 +1001,11 @@
 0x55f1f func crt_fputc hand Watcom fputc core: checks the write flag (errno 4 on a read-only stream), allocates the buffer on first use, stores the byte and flushes on newline or full buffer
 0x684c6 func crt_FmtExponent hand Watcom printf helper: writes the sign and 2 or 3 digit exponent after e or E for the e and G conversions
 0x570c2 func crt_HeapAllocFromSeg hand Watcom near heap allocate inside one heap segment: rounds the size to 8 (+0x10 minimum), first-fit walk from the rover +0xc or +0x28, limit +0x14
-0x52620 func AIL_unnamed_52620 hand Miles wrapper (log entry / result skeleton) whose name string was not recovered, called by snd_Shutdown, provisional
 0x59580 func ail_ParseHexOrDec hand Miles ini reader helper: parses a number with the digit table 0123456789ABCDEF (hex when prefixed), returns the value and sets local flags
 0x5a7a0 func ail_DigDriverShutdown hand Miles DIG shutdown: pending driver call +0x58 flushed, dig_ buffers released via FUN_0006778e and FUN_000676fb twice, AIL_delay, timer handle released, FUN_00057c50 and FUN_00057d20
 0x57bb0 func ail_RealModeAlloc hand Miles real-mode memory helper: zeroes a 7-dword DPMI register block, allocates DOS memory and returns the segment and selector (callers AIL_startup and the file sample loader)
 0x57b10 func ail_RealModeFree hand Miles real-mode memory helper: computes the paragraph span between two addresses, zeroes a DPMI register block and frees the DOS memory
 0x57dae func ail_ReadTimer0 hand Miles timer: latches PIT counter 0 (out 0x43 then two in 0x40) and converts it to elapsed microseconds against the reload DAT_000cdc9a (0x10000 when 0)
-0x4e2c0 func AIL_unnamed_4e2c0 hand Miles wrapper (vsprintf, ail_LogString, body FUN_0005c390, result log) whose name string was not recovered, provisional
 0x5e700 func ail_XmidiReleaseChannel hand Miles XMIDI: frees the one channel slot equal to param_2 in +0x55c..+0x5d8 and flushes the pending driver call +0x1ac (callers lock_channel, init_sequence, quick_play)
 0x68c78 func crt_DetectDpmiHost hand Watcom runtime: once (DAT_000ceb4c) checks for a DPMI host with int 31h 0x400 or int 2Fh and records the result
 0x676fb func dig_BuildFormatFlags hand Miles DIG: builds the DMA format word DAT_000cea60 from the driver record (+0x20 low bits, +0x1c 16-bit and stereo flags 0x10 0x20, +0x68 channels 0x40) then sets up the buffer at +0x4c
@@ -1074,7 +1029,6 @@
 0x55555 func crt_Int7Restore hand __sys_init_387_emulator twin: restores the int 7 vector per extender type (DOS/4G 0xe02 call, DOS 21h 25xx, DPMI) and the CR0 bits DAT_000cda82
 0x69868 func crt_RaiseSignal hand Watcom raise() core: looks up the handler table DAT_000ceb50, SIG_DFL on 1 aborts with ABNORMAL TERMINATION, SIGINT (4) unhooks int 23h
 0x59fc0 func ail_ReadDigIni hand Miles DIG.INI reader: AIL_API_read_INI, on failure copies the Unable to open file DIG.INI message into DAT_002c6840
-0x4f2e9 func AIL_unnamed_4f2e9 hand Miles wrapper (body FUN_0005c770, result through ail_LogPrintf) whose name string was not recovered and whose first bytes are padding, provisional
 0x55c90 func crt_AllocStreamBuffer hand Watcom __ioalloc: FUN_00055ae7 then picks the buffer size +0x14 (0x1000 default, 1 for unbuffered, line-buffered otherwise)
 0x60750 func ail_RedbookGetPosition hand AIL_API_redbook_status helper: MSCDEX ioctl input (command 3, subcode 6 device status) into the request block DAT_002c6c20
 0x57421 func crt_HeapLinkSegment hand Watcom heap: inserts a new heap segment into the sorted segment list DAT_000cd9cc (prev +4, next +8)
@@ -1121,7 +1075,7 @@
 0x61740 func ail_RealModeStubInitOnce hand provisional once-guarded (DAT_000ce908) real-mode block alloc and three 0x57af0 calls
 0x652ee func crt_RestoreWinFpuState hand provisional int 2f FA21/FA1F Windows FPU notify when DAT_000ce9ed, from crt_Int7Restore
 0x6a0fa func crt_FpeGetVectors hand DPMI 0204/0200 reads the FPE interrupt vectors into __PMSeg/__PMAddr, from __Init_FPE_handler
-0x65488 func crt_FlushAllStreams hand provisional walks the stream list DAT_002c67f0 testing flags 0x40/8
+0x65488 func crt_FlushStreamList hand provisional walks the stream list DAT_002c67f0 testing flags 0x40/8 | DOS-B1 renamed from duplicate name crt_FlushAllStreams
 0x54250 func ail_LogFormatString2 hand vsprintf (DAT_000cdaf4) two-arg variant into a 128-byte buffer
 0x65396 func crt_GetHandleFlags hand handle table PTR_DAT_000cea54 lookup below DAT_000cea00, sets 0x40 and probes device bit 0x20
 0x6648a func dig_MixCopy16SStereoRL hand mixer output: clamp to signed 16-bit interleaved, right first
@@ -1136,7 +1090,7 @@
 0x60de0 func ail_RedbookMsfToMsB hand three separate M S F args to milliseconds (75 fps)
 0x677ea func crt_EnvNameCompare hand case-insensitive name compare used by crt_getenv
 0x542b0 func ail_LogFormatString1 hand vsprintf (DAT_000cdaf4) one-arg variant into a 128-byte buffer
-0x625a2 func fpe_DecodeInstruction hand provisional 732-line 387 emulator opcode decoder using the tables at 0x61ffe..0x6209f
+0x625a2 func fpe_DecodeOpcode hand provisional 732-line 387 emulator opcode decoder using the tables at 0x61ffe..0x6209f | DOS-B1 renamed from duplicate name fpe_DecodeInstruction
 0x4a50a func lvl15_AlarmStart hand provisional sets sprite coords 0x5b0/0x420, DAT_002125d8 at least 3, queues event 0xc9b6c
 0x69723 func crt_FloatNormalize64 hand shifts a 64-bit mantissa left until bit 52 set, adjusting the exponent, for crt_FloatTrunc
 0x67365 func dig_MixMerge16StereoToMonoSwap hand resampling merge of 16-bit unsigned stereo source summed into one int, channels swapped
@@ -1180,7 +1134,6 @@
 0x60a70 func ail_RedbookReleaseRef hand provisional decrements DAT_000ce8f0 and frees the real-mode block via 0x57c50 at zero
 0x66ae9 func dig_MixMerge8StereoNoVolSwap hand resampling merge of 8-bit unsigned stereo (byte to high byte) without volume, swapped
 0x66a7d func dig_MixMerge8StereoNoVol hand resampling merge of 8-bit unsigned stereo (byte to high byte) without volume
-0x628c9 func fpe_DecodeModRM hand provisional 387 emulator modrm decode, picks the 0x300/0x200 class handlers
 0x60fa0 func ail_RedbookFreeBlock hand provisional clears +0x2e/+0x30 then frees through DAT_000cdaf0
 0x58862 func dos_OpenHandle hand int 21 AX=3D01 open, retries on error 2 with another mode, used by AIL_startup
 0x4abbf func lvl15_BeaconStart hand provisional queues event 0xc9be4 and sets sprite coords 0x160/0x660
@@ -1194,7 +1147,6 @@
 0x5447e func crt_RunAtExitList hand provisional runs the DAT_002c6748 function list once, guard DAT_002c67cc=0x21
 0xa003d func sys_OutPortByte hand provisional stores DAT_0020ba1f and writes the byte to a port, tiny ISR-area stub
 0x66e84 func dig_MixMerge16Mono1x hand non-resampling merge of 16-bit unsigned mono into both int channels
-0x6284f func fpe_ExecOpcodeLoad hand provisional 387 emulator opcode path loading via __EmuFSLD with the 0x62000 tables
 0x67209 func dig_MixMerge8StereoTableSwap hand resampling merge of 8-bit stereo through a 256-int volume table (+0x400 right), swapped
 0x67198 func dig_MixMerge8StereoTable hand resampling merge of 8-bit stereo through a 256-int volume table (+0x400 right)
 0x670cf func dig_MixMerge16SStereo1xSwap hand non-resampling merge of signed 16-bit stereo into int pairs, swapped
@@ -1353,7 +1305,6 @@
 0x54fdb func crt_PentiumFdivStub_st3_d hand provisional: Pentium FDIV bug workaround block for st(3), variant 4
 0x54f37 func crt_PentiumFdivStub_st2_d hand provisional: Pentium FDIV bug workaround block for st(2), variant 4
 0x54e93 func crt_PentiumFdivStub_st1_d hand provisional: Pentium FDIV bug workaround block for st(1), variant 4
-0x628ab func fpe_SaveRegsAndDecode hand provisional: copies the 7 saved registers into the emulator frame then falls into the decode loop at 0x62400
 0x607d0 func ail_RedbookStatusRequest hand sets command 0x85 in the shared request block DAT_002c6c20 and ail_RedbookSendRequest
 0x57e44 func ail_TimerResetElapsed hand when the timer is active (DAT_000cdc7c) stores ail_ReadTimer0 into DAT_000cdc80 and clears DAT_000cdc78
 0x65c1e func dig_MixCopy8USplitRL_Byte hand mixer output: high bytes xor 0x80 of int pairs into two 8-bit buffers, right first, byte stores
@@ -1402,7 +1353,6 @@
 0x65c4d func dig_MixCopy16UMono_NoClamp hand mixer output: low half xor 0x8000 of each int, mono, no clamp
 0x65bdb func dig_MixCopy8SStereoRL_Packed hand mixer output: high bytes of an int pair packed into one word, right then left
 0x65ba8 func dig_MixCopy8SStereoLR_Packed hand mixer output: high bytes of an int pair packed into one word, left then right
-0x62909 func fpe_RestoreRegsAndDecode hand provisional: copies the 7 emulator frame registers back then continues in the decode loop at 0x62400
 0x55237 func crt_PentiumFdivStub_st7_c hand provisional: Pentium FDIV bug workaround block for st(7), variant 3 (fn_44ca04 only)
 0x5520b func crt_PentiumFdivStub_st7_a hand provisional: Pentium FDIV bug workaround block for st(7), variant 1 (block start, blocks every 0xa4 bytes from 0x54ed7)
 0x55193 func crt_PentiumFdivStub_st6_c hand provisional: Pentium FDIV bug workaround block for st(6), variant 3
@@ -1439,7 +1389,6 @@
 0x65c61 func dig_MixCopy16SMono_NoClamp hand mixer output: low half of each int, mono, no clamp
 0x69f5e func fpe_StoreResultFloat hand stores st0 as float or double (BL bit 2) at EDI for the InvalidOp path
 0x63b16 func fpe_SubExtended hand subtracts two emulator extended values through crt_FpuEmuAdd and stores the result with the sign word
-0x6291d func fpe_OpStoreWordAndDecode hand provisional: stores one word from the emulator frame then continues in the decode loop at 0x62400
 0x61fd4 func crt_ScanFloatToDouble hand crt_ScanFloat then stores the result as a double through EBX (strtod style helper)
 0x58955 func dos_Int21Call hand generic int 21h call with the register arguments (used by AIL_shutdown, driver file load, ini read)
 0x53980 func ail_ServeHookStub hand serve callback stub that just calls ail_NopReturnB (from ail_ServeDriversGuarded / ail_XmidiTimerServe)
@@ -1538,7 +1487,7 @@
 0x1419c func target_TestCandidate hand lock-on candidate test (ex fn_4141a8): on-screen box around DAT_00212454/58, keeps the nearest in DAT_00212468 and its position in DAT_0021245c..DAT_00212474
 0x210bc func spr_DrawClipped hand draws a sprite record clipped to the rectangle offsets at param_1[2]/[3] (unscaled)
 0x2f1d4 func ent_InitRecord hand provisional: initialises an entity record from its type (DAT_000c6e61 + type*0x20 byte into +0x22, default scales 0x400)
-0x1bef0 func file_LoadToBuffer hand loads a whole file into the given buffer (ex s_file_load_error): file_OpenB, crt_fread, debug prints loading / size / load buffer not alloced
+0x1bef0 func file_LoadToBuffer hand loads a whole file into the given buffer (ex s_file_load_error): file_OpenB, crt_fread, debug prints loading / size / load buffer not alloced | merged DOS-B1 the cut 0x1c082 file_Close (fclose (FUN_0004bbed) with fatal_Error on a null handle; string Error creating1 %s)
 0x1a91c func opt_DrawMenuItem hand draws a menu item text sprite pair through spr_DrawClipped, offset 0x10 when it is the selected item (opt_KeyDefine, opt_KeysMenuBuild)
 0x12fb4 func level_LoadBackground hand loads the level backdrop (ex s_x_bg2): waste0.p8b palette+picture row from PTR_s_waste0_p8b_000cc67c, vga_SetPalette, then the x.bg2 big file
 0x13338 func map_TileCellPtr hand provisional: returns the pixel pointer of a 4x4 sub-tile: cell grid DAT_0012a762 (64 per row) -> tile index DAT_00138e0c -> tile data DAT_00138e04 (0x40 per tile)
@@ -1617,8 +1566,8 @@
 0x1147c func rd_BigEndian16 hand reads a big-endian 16-bit value from a byte pointer (ex fn_411488)
 0x1c8ec func mem_FastFree hand fast free: decrements the counter DAT_002c2590 and releases the block (inlined crt_free: segment walk DAT_000cd9cc, crt_HeapFree, largest-free update DAT_000cd9d4) (font_LoadMini) (ex fn_41c5fc)
 0x54daf func crt_PentiumFdivDispatch hand jumps through the FDIV stub table PTR_crt_PentiumFdivStub_fdiv_000cee14 by index (ex fn_44cb1b)
-0x24607 func debrief_Percent hand returns 100 when the total is 0, else (count * 200 / total + 1) / 2 = rounded percentage (ex fn_425397)
-0x24598 func level_CountGenericScripts hand counts the 0x10-byte binding records (DAT_002123d4, count DAT_002123d8) whose handler +0xc is lvl_Script_Generic (ex fn_425328)
+0x24607 func debrief_Percent hand returns 100 when the total is 0, else (count * 200 / total + 1) / 2 = rounded percentage (ex fn_425397) | merged DOS-B1 the cut 0x24611 math_Percent (returns round(a*100/b), 100 when b == 0)
+0x24598 func level_CountGenericScripts hand counts the 0x10-byte binding records (DAT_002123d4, count DAT_002123d8) whose handler +0xc is lvl_Script_Generic (ex fn_425328) | merged DOS-B1 the cut 0x245a2 timer_FindByCallback (walks the DAT_002123d4 timer list (count DAT_002123d8) for the entry whose +0xc callback is FUN_000244dc)
 0x1f554 func dbg_PrintStub hand stripped debug printf: sub esp 4 / add esp 4 / ret, called before every debug format string (cd_Init, file_LoadBig, file_BigFileEnd)
 0x56699 func crt_prtfFloatHook hand __prtf float formatter hook: jumps through PTR_000ce968, which points at crt_FpuNotLoaded in this build (no float printf support linked) (ex fn_44de29)
 0x55755 func crt_SetErrnoErange hand sets errno = 0xe ERANGE through crt_ErrnoPtr (crt_MathErrDispatch, crt_ScanFloat) (ex fn_44fdb8)
@@ -1626,3 +1575,56 @@
 0x55744 func crt_SetErrnoEdom hand sets errno = 0xd EDOM through crt_ErrnoPtr (crt_MathErrDispatch) (ex fn_44fda5)
 0x69b92 func crt_Pow10Epilog hand pop edi / ret shared epilogue reached by getpow10 (ex fn_450e10)
 0x5ff33 func dig_SetPitchBendRate hand provisional: DIG pitch bend rate setter (compare against 0x2000); real entry after the 14 padding bytes at 0x5ff25 (recreated after DeleteFunctions)
+0x6292b func fpe_OpFiaddM32 hand 387 emulator da /0 fiadd m32int (dispatch table 0x6216c row 0 column da; split off by DOS-B1, restored)
+0x6294a func fpe_OpFimulM32 hand 387 emulator da /1 fimul m32int (dispatch table 0x6216c)
+0x62969 func fpe_OpFicomM32 hand 387 emulator da /2 ficom m32int (dispatch table 0x6216c)
+0x62985 func fpe_OpFicompM32 hand 387 emulator da /3 ficomp m32int (dispatch table 0x6216c)
+0x629a1 func fpe_OpFisubM32 hand 387 emulator da /4 fisub m32int (dispatch table 0x6216c)
+0x30c67 func ai_SlideDownSlope hand Win95 twin 0x4319f7 (same size 359): velocity +0x60/+0x64 follows the map_GetCell height gradient (clamped +-0xa000), bob +0x68 halves and flips; no callers; was inside ai_t14_Hit until DOS-B1
+0x30dce func ai_t14_Think hand think slot (col 0) of type 14, pointer at data 0xc702c; Win95 twin 0x431b5e (same size 842); was merged into ai_t14_Update until DOS-B1
+0x629c0 func fpe_OpFisubrM32 hand 387 emulator da /5 fisubr m32int (dispatch table 0x6216c)
+0x629df func fpe_OpFidivM32 hand 387 emulator da /6 fidiv m32int (dispatch table 0x6216c)
+0x629fe func fpe_OpFidivrM32 hand 387 emulator da /7 fidivr m32int (dispatch table 0x6216c)
+0x6284f func fpe_OpFldM32 hand 387 emulator d9 /0 fldm32 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position) (was fpe_ExecOpcodeLoad)
+0x628ab func fpe_OpFldenv hand 387 emulator d9 /4 fldenv (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position) (was fpe_SaveRegsAndDecode)
+0x628c9 func fpe_OpFldcw hand 387 emulator d9 /5 fldcw (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position) (was fpe_DecodeModRM)
+0x62909 func fpe_OpFnstenv hand 387 emulator d9 /6 fnstenv (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position) (was fpe_RestoreRegsAndDecode)
+0x6291d func fpe_OpFnstcw hand 387 emulator d9 /7 fnstcw (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position) (was fpe_OpStoreWordAndDecode)
+0x62a1d func fpe_OpFildM32 hand 387 emulator db /0 fildm32 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62a57 func fpe_OpFistM32 hand 387 emulator db /2 fistm32 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62a93 func fpe_OpFistpM32 hand 387 emulator db /3 fistpm32 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62ab7 func fpe_OpFaddM64 hand 387 emulator dc /0 faddm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62ada func fpe_OpFmulM64 hand 387 emulator dc /1 fmulm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62afd func fpe_OpFcomM64 hand 387 emulator dc /2 fcomm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62b1d func fpe_OpFcompM64 hand 387 emulator dc /3 fcompm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62b3d func fpe_OpFsubM64 hand 387 emulator dc /4 fsubm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62b60 func fpe_OpFsubrM64 hand 387 emulator dc /5 fsubrm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62b83 func fpe_OpFdivM64 hand 387 emulator dc /6 fdivm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62ba6 func fpe_OpFdivrM64 hand 387 emulator dc /7 fdivrm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62bc9 func fpe_OpFldM80 hand 387 emulator db /5 fldm80 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62c10 func fpe_OpFldM64 hand 387 emulator dd /0 fldm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62c4e func fpe_OpFstM64 hand 387 emulator dd /2 fstm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62c63 func fpe_OpFstpM80 hand 387 emulator db /7 fstpm80 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62c81 func fpe_OpFstpM64 hand 387 emulator dd /3 fstpm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62c96 func fpe_OpFrstor hand 387 emulator dd /4 frstor (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62cdd func fpe_OpFnsave hand 387 emulator dd /6 fnsave (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62d08 func fpe_OpFnstsw hand 387 emulator dd /7 fnstsw (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62d16 func fpe_OpFiaddM16 hand 387 emulator de /0 fiaddm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62d37 func fpe_OpFimulM16 hand 387 emulator de /1 fimulm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62d58 func fpe_OpFicomM16 hand 387 emulator de /2 ficomm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62d76 func fpe_OpFicompM16 hand 387 emulator de /3 ficompm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62d94 func fpe_OpFisubM16 hand 387 emulator de /4 fisubm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62db5 func fpe_OpFisubrM16 hand 387 emulator de /5 fisubrm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62dd6 func fpe_OpFidivM16 hand 387 emulator de /6 fidivm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62df7 func fpe_OpFidivrM16 hand 387 emulator de /7 fidivrm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62e18 func fpe_OpFildM16 hand 387 emulator df /0 fildm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62e54 func fpe_OpFistM16 hand 387 emulator df /2 fistm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62e9c func fpe_OpFistpM16 hand 387 emulator df /3 fistpm16 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62ecc func fpe_OpFbld hand 387 emulator df /4 fbld (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62ed1 func fpe_OpFildM64 hand 387 emulator df /5 fildm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62f0b func fpe_OpFbstp hand 387 emulator df /6 fbstp (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62f10 func fpe_OpFistpM64 hand 387 emulator df /7 fistpm64 (dispatch table 0x6216c slot reg*8+opcode-0xd8; DOS-B1 from the table position)
+0x62758 func fpe_OpInvalid hand 387 emulator handler for the reserved memory forms (d9/1 db/1 db/4 db/6 dd/1 dd/5) in dispatch table 0x6216c; jumps to 0x62904
+0x10001 func crt_BegtextTrap hand int3 trap loop at the very start of the code object (jmp back to the int3 at 0x10000), before ___begtext
+0xa0000 func sys_KeyboardIsr2 hand second keyboard interrupt handler (pushad, pushfd, in al 0x60, pulses port 0x61 bit 7 like sys_KeyboardIsr 0x902b2); Ghidra had split it one byte late at 0xa0001 (DOS-B1)
+0x5ff00 func ail_WaveSynthTimbreCallback hand timbre callback that AIL_API_create_wave_synthesizer registers with AIL_register_timbre_callback (push 0x5ff00 at 0x5f962): stdcall 3 args, returns ail_MdiFindTimbreEntry != 0 for the synth state +0x1b8 (DOS-B1)
