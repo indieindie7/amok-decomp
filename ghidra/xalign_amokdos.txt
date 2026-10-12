@@ -1,0 +1,2 @@
+0x000692a9 func fn_45034d xalign AMOKWIN95:0045034d
+0x0005524b func fn_44cfb7 xalign AMOKWIN95:0044cfb7

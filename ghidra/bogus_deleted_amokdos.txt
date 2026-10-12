@@ -1,0 +1,22 @@
+0x1ba00 func bogus_1ba00 hand provisional; 9-byte fragment reading the return address, not a real function
+0x30001 func bogus_30001 hand provisional; mid-function fragment (unaff_EBP), 1 byte; 0xc8e38 holds 0x30001 as a constant
+0x10000 func bogus_10000 hand provisional; int3 at the image base, not a function
+0x5d045 func bogus_5d045 hand not a function: case-insensitive string compare loop entered mid-body (writes to +0x81000000), inside the IBM internal speaker driver strings area, delete later
+0x5ff25 func bogus_5ff25 hand not an entry: 14 padding bytes after a ret 0Ch; the real function (DIG pitch bend rate, compare 0x2000) starts at 0x5ff33, recreate after DeleteFunctions
+0x516e9 func bogus_516e9 hand provisional mid-body garbage (out instruction) with no callers, delete later
+0x51240 func bogus_51240 hand provisional mid-body entry near a second Result = %ld log routine, delete later
+0x64546 func bogus_64546 hand provisional mid-body garbage inside the 387 emulator, delete later
+0x4fff3 func bogus_4fff3 hand not a function: data decoded as code (garbage adds and an fmul), delete later
+0x6458a func bogus_6458a hand not a function: data decoded as code (aaa and garbage adds), delete later
+0xa0000 func bogus_a0000 hand not a function: an fdiv on an absolute address at the 0xa0000 object start, delete later
+0x5c7ff func bogus_5c7ff hand not a function: data decoded as code (repeated adds), delete later
+0x4fa84 func bogus_4fa84 hand not a function: shared epilogue tail (add esp 0x8c, pops) before AIL_end_sequence
+0x4b78c func bogus_4b78c hand not a function: tail fragment (and al 4, call 0x4b630, ret 0x10) of the preceding routine
+0x68437 func bogus_68437 hand not a function: shared return tail (mov eax 1, add esp 8, ret)
+0x54b4f func bogus_54b4f hand not a function: data decoded as code (add [esi-0x74] ah, adc)
+0x5f000 func bogus_5f000 hand not a function: data decoded as code at the object start
+0x4aa05 func bogus_4aa05 hand not a function: epilogue tail (pop esi, pop ecx, pop ebx, ret)
+0x64587 func bogus_64587 hand not a function: int3 padding
+0x64588 func bogus_64588 hand not a function: int3 padding
+0x64589 func bogus_64589 hand not a function: int3 padding
+0x65347 func bogus_65347 hand not a function: stray ret before crt_FpuInfCompareCheck
