@@ -299,7 +299,7 @@
 0x44243d func ai_t17_Init hand twin of DOS ai_t17_Init by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x4433a4 func ai_t18_ThinkSlot hand twin of DOS ai_t18_ThinkSlot by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x4433d1 func ai_t18_Update hand twin of DOS ai_t18_Update by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
-0x443477 func ai_t18_Slot2 hand twin of DOS ai_t18_Slot2 by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
+0x443477 func ai_t18_Slot2 hand twin of DOS ai_t18_Slot2 by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6) | merged WB (10-11) its switch pieces caseD_0 0x4434e3, caseD_1 0x443534, default 0x443547 (jump-table and JMP refs only)
 0x44355d func ai_t18_Hit hand twin of DOS ai_t18_Hit by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x443750 func ai_Pointer_c6a28_Init hand twin of DOS ai_Pointer_c6a28_Init by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x445107 func ai_t24_Update hand twin of DOS ai_t24_Update by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
@@ -331,7 +331,7 @@
 0x4471f5 func ai_Pointer_c6934_Hit hand twin of DOS ai_Pointer_c6934_Hit by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x447244 func ai_Pointer_c6938_Die hand twin of DOS ai_Pointer_c6938_Die by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x4472c7 func ai_Pointer_c6868_Init hand twin of DOS ai_Pointer_c6868_Init by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
-0x447c67 func ai_Pointer_c686c_Update hand twin of DOS ai_Pointer_c686c_Update by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
+0x447c67 func ai_Pointer_c686c_Update hand twin of DOS ai_Pointer_c686c_Update by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6) | merged WB (10-11) the mid-body boss pieces (only JMP or jump-table refs, no CALL) 0x447e60 boss_SpawnFxThenUpdate_frag,0x447ec4 boss_PhaseReset_frag,0x448042 boss_DispatchState_frag,0x44806d boss_Update_frag,0x448548 boss_AnimSelect_frag,0x448562 boss_AnimScript_frag,0x448e58 boss_PhaseState_frag,0x448e74 boss_TickLoop_frag,0x448e79 boss_ScanTargets_frag,0x448fab boss_AnimStepThunk_frag; body now 0x447c67..0x448fb2 like the DOS twin after DB1
 0x449557 func lvl_Script_c9088_Update hand twin of DOS lvl_Script_c9088_Update by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x4498ad func lvl_t39_Init hand twin of DOS lvl_t39_Init by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
 0x4499a5 func lvl_Script_c908c_Update hand twin of DOS lvl_Script_c908c_Update by pointer table position (Win95 data file offset + 0x7b4d4 = DOS data address, W6)
@@ -375,7 +375,6 @@
 0x00440b29 func ai_RandomFireB hand twinmap order match between the W6 anchors (twin_AMOKWIN95_4.txt, DOS amokdos:0003fd99); W7
 0x004424c1 func ai_AimedShot hand twinmap order match between the W6 anchors (twin_AMOKWIN95_4.txt, DOS amokdos:00041731); W7
 0x004427e4 func ai_DriftStep hand twinmap order match between the W6 anchors (twin_AMOKWIN95_4.txt, DOS amokdos:00041a54); W7
-0x00443534 func caseD_1 hand twinmap order match between the W6 anchors (twin_AMOKWIN95_4.txt, DOS amokdos:0002831d); W7
 0x00445d60 func ai_t06_SpawnChild25 hand twinmap order match between the W6 anchors (twin_AMOKWIN95_4.txt, DOS amokdos:00044fd0); W7
 0x00445e87 func ai_MeleeApproachB hand twinmap order match between the W6 anchors (twin_AMOKWIN95_4.txt, DOS amokdos:000450f7); W7
 0x004469fb func ai_StaticShooter_Anim hand twinmap order match between the W6 anchors (twin_AMOKWIN95_4.txt, DOS amokdos:00045c6b); W7
@@ -384,11 +383,6 @@
 0x440d8f func ai_Pointer_c6ad0_FallAnim hand audited WA1: DOS twin lvl_Script_c8f44_Update 0x40010 (1281 vs 1264 bytes, both call map_GetCell); Win name kept, its callers are the c6acc/c6ad0 pointer slots. called by ai_Pointer_c6acc/c6ad0_Update; scripted phases +0x54 0..3 over countdown +0x68, swings heading +0xe by 0x30/0x60 steps, advances frame +0x1c, accumulator +0x60 += 0x80 steps a record at +0x5c (+2 +4 deltas); DOS twin merged into its caller (W7)
 0x447420 func ai_BigEntityIsAimed hand audited WA1: DOS twin ai_BigEntityAimPoint 0x46690, 304 bytes both (was boss_HeadingError_frag). boss (level 15) fragment with lost prologue (DOS twin is the single 3973-byte ai_Boss_Update_frag 0x470d0): heading error from math_Atan2(target - pos) where target kind (+0x70 & 0xf) 6 = cell table DAT_005d2e14 else the entity +0x14/+0x18; +0x70 bits 0xf000 = aim offset (W7) | DB2 renamed with the DOS twin (was ai_BigEntityAimPoint)
 0x447648 func boss_PickAttack_frag hand audited WA1: nearest DOS routine ai_BigEntityPickMode 0x468b8 (810 vs 661 bytes); Win boss code is restructured. boss fragment: when idle (+0x70 == 0) picks the next attack mode into +0x70 (0x9004 close, 0x7002, (8 - rnd&2)*0x1000+1) from the random stream DAT_005d2e08 and the phase counter DAT_005d2a5c (W7)
-0x44806d func boss_Update_frag hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. boss fragment: respawn to 0x420/0x60 cells heading 0x3b0 and frame 0x8000 when DAT_005d34f8 == 0, hp +0x2c capped 14000; calls the anim steppers FUN_00448fab / FUN_00448548 (W7)
-0x447e60 func boss_SpawnFxThenUpdate_frag hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. boss fragment: fx_Spawn(ent) then boss_Update_frag (W7)
-0x447ec4 func boss_PhaseReset_frag hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. boss fragment: when DAT_005d2a44 phase bits are 0 resets hp to 0xb6b0, anim +0x20/+0x22, speed +0x80 = 0x400 and sets phase 0x1000, then boss_Update_frag (W7)
-0x448562 func boss_AnimScript_frag hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. boss fragment: steps the anim script at +0x50 (entry index +0x54, 4 bytes each, repeat count +0x58, frame pointer +0x5c), then boss_ScanTargets_frag (W7)
-0x448e79 func boss_ScanTargets_frag hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. boss fragment: walks the entity list DAT_005d2e04 for types 0xb / 0x1a within distance 0x240 (cell size DAT_005d3698) and aims with math_Atan2; stores the boss cell into DAT_005d34f0/f4 (W7)
 0x4497a7 func lvl15_InitBossB hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. bigger sibling of lvl15_InitBoss 0x44ad5d: lvl_SpawnRectFx, sounds 0xc12b/0xc128, map_QueueCellSwap(10,8,1)/(0xf,8,1), DAT_005d36cc = 200, DAT_005d2fc0/c4/c8 = 0x40/0x80/1, boss cell DAT_005d34f0/f4 = 0x18e/0xf0, lvl15_QueueEvent script picked by the sign of DAT_005d2a2c (0x487ba4 / 0x487bbc / 0x487c04) (W7)
 0x4319f7 func ai_SlideDownSlope hand no callers: velocity +0x60/+0x64 follows the map_GetCell height gradient around the entity (clamped to +-0xa000) and the bob +0x68 halves and flips each tick; probably dead code in this build (W7)
 0x44d205 func crt_NtInit hand Watcom NT runtime startup: thread data FUN_0044f1fd, GetEnvironmentStrings into DAT_0048bae9, GetModuleFileNameA / GetCommandLineA copied with FUN_0044f4d0 into DAT_0048babc / DAT_0048bab8, GetVersion (W7)
@@ -399,8 +393,6 @@
 0x447550 func ai_BigEntityAimedAt hand audited WA1: DOS twin ai_BigEntityAimedAt 0x467c0, 248 bytes both (was boss_AlignedToTarget_frag). boss fragment: heading error to the target like boss_HeadingError_frag, true when within +-0x3c (W8)
 0x44732b func ai_BigEntityAimedAtB hand audited WA1: DOS twin ai_BigEntityAimedAtB 0x4659b, 245 bytes both (was boss_AlignedToTargetB_frag). boss fragment: heading error halved in attack mode 0x8006, true when within +-0x24 (W8)
 0x447985 func ai_EmitBossSprites hand audited WA1: DOS twin ai_BigEntityMove 0x46bf5, 738 bytes both (was boss_Draw_frag). boss fragment: builds the 10-short boss part sprite records at DAT_004901d4 from the sin/cos tables 0x579b5a/0x579f5a while the phase DAT_005d2a44 < 0x170 (W8) | DB2 renamed with the DOS twin (was ai_BigEntityMove)
-0x448fab func boss_AnimStepThunk_frag hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. 8-byte boss fragment (W8)
-0x448548 func boss_AnimSelect_frag hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. boss fragment: switch on the anim index selects script entry +0x54 = 1 and mode +0x64, then boss_AnimScript_frag (W8)
 0x4499ee func lvl_Script_c9090_RectProximity hand audited WA1: DOS twin lvl_Script_c9090_PickZone 0x48c5e, 329 bytes both (was lvl15_InBossRect). tests the entity +0x14/+0x18 cell against the rects x 0x2d0..0x610 and y 0x4f0..0x6b0 (W8) | DB2 renamed with the DOS twin (was lvl_Script_c9090_PickZone)
 0x471430 func blit_SpanTableRows hand audited WA1: no clean DOS twin (Win95-only or restructured code), Win name kept. software blitter: 0x28-byte descriptor (+0 dest, +0x10 offset table, +0x14 dest rows, +0x20 source, +0x24/+0x26 width/height) into DAT_006a0954/58/5c/64/66; each dword of the table holds two 16-bit source offsets so 4 pixels are gathered per dword (W8)
 0x47004f func vga_ModeXPlanarBlit hand DOS leftover: writes the VGA sequencer map mask with out(0x3c4) per plane and gathers pixels through the offset table DAT_006a0954 into DAT_006a0958; unused on Win95 (W8)
@@ -473,7 +465,6 @@
 0x44f0a3 func crt_MutexClose hand CloseHandle of the mutex handle when field +4 set, then clears +4 +8 +0xc; caller FUN_0044f105
 0x44f02d func crt_FdTableRemove hand under lock PTR_0048bb38/3c clears slot fd of the handle table DAT_00686f80 when 0 < fd < DAT_00686f7c; caller FUN_0044f105
 0x44e87b func crt_AddConsoleCtrlHandler hand SetConsoleCtrlHandler(crt_SignalThreadState, 1) once, DAT_0048bc6c = installed; caller crt_Signal
-0x448042 func boss_DispatchState_frag hand prologue-less boss fragment (unaff_EBP): state at EBP-0x54 > 0x172 -> boss_Update_frag, else looks the state up in the 30-short table DAT_00447f90 and jumps through the pointer table at 0x447fca; caller ai_Pointer_c686c_Update
 0x44f643 func crt_NheapUnlinkSegment hand crt_NheapFreeSegment then unlinks the segment from the __nheapbeg doubly linked list (+4 prev, +8 next); caller crt_NheapShrink
 0x4500b9 func crt_ThreadDataListFreeAll hand frees every node of the thread data list DAT_006870e4 (owned data blocks included)
 0x451001 func crt_EndThread hand PTR_0048bb48, crt_SignalRestoreDefaults, crt_ThreadDataFree(1) unless DAT_00686f68, ExitThread(0); caller FUN_00450a44
@@ -487,7 +478,6 @@
 0x451379 func crt_StreamFreeListRelease hand frees every node of the FILE free list DAT_006870e8; caller FUN_004511b4
 0x44d1cc func crt_FatalBreakOrExit hand crt_FatalBreak, and crt_FatalExitCon when it returns 0; caller crt_FatalOnce
 0x44f105 func crt_FdClosePrivate hand crt_MutexClose of the fd mutex slot (0x686fa4 + (fd & 0xf) * 0x10) then crt_FdTableRemove
-0x448e58 func boss_PhaseState_frag hand prologue-less boss fragment (unaff_EBP): switch on phase EBP-0x6c minus 5: 0 charge counter +0x7c with fx_Spawn + snd 0xc11f, 1 counter +0x80 with sounds 0xc03f/0xc04e, 2 table DAT_0048b972/DAT_0048b95a lookups by hp +0x6c, 3 table DAT_0048b939 and player hit test against DAT_005d2fd4 / DAT_005d30b8 within 0xe1 (sound 0xc02a); all fall into FUN_00448e74
 0x451623 func crt_remove hand DeleteFileA, FUN_00451279 sets errno on failure
 0x4500e2 func crt_calloc hand crt_malloc(n * size) then mem_Set 0; callers crt_ThreadDataInit, crt_StreamAlloc
 0x44c7e9 func crt_exit hand runs PTR_0048ba7c (atexit list) and PTR_0048ba80 then crt_ExitRun; callers win_FatalError, __NTMain
@@ -530,7 +520,6 @@
 0x44cb25 func crt_FpuTrap0 hand 6-byte FPU emulator trap stub (fdiv st0 st0); no callers
 0x460000 func cpu_Rdtsc hand rdtsc, returns the low dword (timer probe); no callers
 0x44d13b func crt_FpuSaveState hand fsave of the whole x87 state into the 108-byte record (control, status, tag, pointers, ST0..ST7); emulator hook PTR_0048bbf4
-0x448e74 func boss_TickLoop_frag hand prologue-less boss fragment (unaff_EBP): per-tick loop with the sin/cos tables 0x579b5a / 0x579f5a, counts EBP-0xc up to DAT_005d36b0, then boss_Draw_frag and the shot list DAT_005d2e04 (types 0xb / 0x1a homing within 0x240 via math_Atan2); hp +0x6c < 0 -> boss_PhaseState_frag with the phase at +0x68
 0x44d140 func crt_FpuLoadTop hand returns the 10-byte value at record +0x1c (ST0 of a saved state); emulator hook PTR_0048bbf8
 0x450a91 func crt_Return0_450a91 hand returns 0 (default thread hook stub)
 0x450a3a func crt_Return0_450a3a hand returns 0 (default third thread hook); caller crt_ThreadHook3
