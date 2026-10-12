@@ -671,3 +671,28 @@
 0x060334dc func lvl_StartWaveScript hand DB3 Saturn gap function. DOS 0x4afaa. probable; constants 0xc8 0x1b7 0x458 SpawnRectFx 0x1e
 0x060335b0 func lvl_ExitPointUpdate hand DB3 Saturn gap function. DOS 0x4b081. two player radius squared under 0x40 then snd 0x7f
 0x060096b4 func rend_TriSortEdgesInner hand DB3 Saturn gap function: local helper called by bsr from rend_TriSortEdges 0x0600967a (pushes pr), also entered by bra from 0x060095e8/0x06009698
+0x6004ae8 func game_EntryLevel1 hand DB4 Saturn orphan; twin of game_Entry: game_StartLevelAndWait(1), sys_HostHandshake31, menu_MainLoop then jump through result-indexed table
+0x6005732 func sys_SetFlagAndJump hand DB4 Saturn orphan; stores 0xffff to a halfword then tail-calls a pointer with one arg; sits by sys_WaitMailbox
+0x6007624 func spr_DrawColumnRLEClipped hand DB4 Saturn orphan; clipped copy of column-RLE sprite (palette via table) into 16-bit frame, 2 columns per loop; called from hud_DrawCompassTicks
+0x600794a func rend_EntityRleSpriteListWalk_794a hand DB4 Saturn orphan; 8-byte split fragment inside the entity RLE sprite list walk; draws each list node with scaled RLE columns
+0x6008fcc func rend_DrawMeshTrianglesAlt hand DB4 Saturn orphan; 8-byte stub entry of a variant of rend_DrawMeshTriangles; walks triangle index list calling rend_DrawMeshTriangleList callee 9528
+0x6009528 func rend_DrawTexturedTriangle hand DB4 Saturn orphan; clips and sorts 3 vertices by Y, sets edge slopes with MAC divide, calls rend_TriSortEdgesInner span fillers
+0x6009860 func rend_TriTexturedSpans hand DB4 Saturn orphan; inner scan loop stepping u/v and writing texel via palette lookup per pixel; called from rend_TriSortEdgesInner
+0x600b506 func menu_RowNoop hand DB4 Saturn orphan; menu row handler that does nothing for any input
+0x600b512 func menu_RowToggle2Select hand DB4 Saturn orphan; wraps a 0/1 option with left/right when gate global is 0 then hud_LayoutRows and menu_LayoutSelect
+0x600b540 func menu_RowStep4Choice hand DB4 Saturn orphan; 4-choice option wraps with and 3 then hud_LayoutRows
+0x600b562 func menu_RowToggleMusicTrack hand DB4 Saturn orphan; on any press toggles a 0/1 global and calls a function pointer with base+value (likely CD music/stereo toggle, uncertain)
+0x600b594 func menu_RowStep2Choice hand DB4 Saturn orphan; 2-choice option wraps with and 1 then hud_LayoutRows
+0x600b614 func menu_RowSoundTest hand DB4 Saturn orphan; value 0..8 wrapped; select plays sample value-1 and waits up to 60 frames for done flag; 0 calls other function
+0x600b680 func menu_RowStep3Columns hand DB4 Saturn orphan; clamps 0..2 value then hud_LayoutRows and menu_LayoutColumns
+0x600b6ba func menu_RowStepClampMax hand DB4 Saturn orphan; steps a value between 0 and a max global with clamp then hud_LayoutRows
+0x600b6ee func menu_RowStepVolume8 hand DB4 Saturn orphan; clamps 0..8 value (volume style) then hud_LayoutRows and menu_LayoutSelect; also fixes sibling column value 2 to 1
+0x600b744 func menu_RowResetDefaults hand DB4 Saturn orphan; on press calls hud_LayoutRows, sets default values (0x2c) and menu_SetRowValue(0) and a default
+0x600c23c func sys_FillRect80x64 hand DB4 Saturn orphan; fills 80x64 halfword block of VRAM with one color
+0x600c5f0 func sys_HostCmdSpriteRangeSkippable hand DB4 Saturn orphan; runs sprite script frames for (b-a+1) counts with RLE draw and vblank, button press skips and clears sprites
+0x600c656 func sys_HostCmdWaitEventJump hand DB4 Saturn orphan; steps sprite script twice per vblank until a flag is set, then dispatches via table or clears sprites
+0x600c6a4 func sys_HostCmdWaitInputThenEvent hand DB4 Saturn orphan; steps sprite script until input poll ends, then waits for event flag and dispatches
+0x600c70c func sys_HostCmdWaitFramesJump hand DB4 Saturn orphan; steps sprite script for N frames then dispatches via table or clears sprites
+0x600c798 func sys_HostCmdFadeBackdrop hand DB4 Saturn orphan; fade loop writing gray/red-tinted color register over 10 steps, then clears screen twice via 0x600c7fe
+0x600c7fe func sys_HostCmdClearScreen hand DB4 Saturn orphan; fills VRAM with one color (full or 80x? block by arg) then vblank; called twice by fade cmd
+0x600cc50 func rend_InitTerrainCameraBasis hand DB4 Saturn orphan; builds terrain camera basis vectors from angle with sin/cos table (x3.25 scale) and view extents; called by sys_HostCmdRunTerrainScene

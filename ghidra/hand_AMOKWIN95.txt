@@ -541,3 +541,43 @@
 0x43032f func ai_DefaultDie hand audited DB3: DOS twin 0x2f59f; +0x20=0 +0x22=-1; unreferenced; was uncovered
 0x430387 func ai_CenterInCell hand audited DB3: DOS twin 0x2f5f7; pos +0x30/+0x34 += 0x8000; unreferenced; was uncovered
 0x449120 func lvl_StubEmpty hand audited DB3: DOS twin 0x48390; unreferenced empty stub; was uncovered
+0x410064 func quan_AllocTables hand DB4 Win95 orphan; DOS twin 0x10058 (Wu quantizer: mem_Alloc Quan: not enough space, 256-entry square table)
+0x41020c func quan_Moments3d hand DB4 Win95 orphan; DOS twin 0x10200 (cumulative 3D moment pass over the 33x33x33 cubes)
+0x4104bc func quan_Vol hand DB4 Win95 orphan; DOS twin 0x104b0 (box volume from moment cube)
+0x410580 func quan_Top hand DB4 Win95 orphan; DOS twin 0x10574 (Wu Top sums, axis arg, 0x84 strides)
+0x4106f0 func quan_BoxFaceSum hand DB4 Win95 orphan; DOS twin 0x106e4 (Wu Bottom style face sum for dir 0/1/2)
+0x410854 func quan_Variance hand DB4 Win95 orphan; DOS twin 0x10848 (weighted variance of a box, float10)
+0x41096c func quan_Maximize hand DB4 Win95 orphan; DOS twin 0x10960 (best cut position scan along an axis)
+0x410b04 func quan_Cut hand DB4 Win95 orphan; DOS twin 0x10af8 (quan_Vol x4 then three maximize calls, splits the box)
+0x410cc8 func quan_FillBox hand DB4 Win95 orphan; DOS twin 0x10cbc (tags every cell of a box with the colour index)
+0x410d80 func quan_Quantize hand DB4 Win95 orphan; DOS twin 0x10d74 (Wu quantizer main: Histogram done / Quan not enough space, writes palette DAT_005834e4)
+0x4111f0 func quan_BuildHistogram hand DB4 Win95 orphan; DOS twin 0x111e4 (same DOS name; 32x32x32 nearest palette index table over the 256 colour palette)
+0x41bcd4 func file_UnlinkStopCd hand DB4 Win95 orphan; DOS twin 0x1c040 (DeleteFileA only, no CD stop on Win95)
+0x41bce4 func file_RecreateEmptyFile_c25d4 hand DB4 Win95 orphan; DOS twin 0x1c05c (DeleteFileA then OpenFile create, Error creating temp %s)
+0x41bfe8 func file_ExistsCheck hand DB4 Win95 orphan; DOS twin 0x1c138 (_lopen test, -1 if open fails else 0)
+0x41c008 func file_WriteBufferToFile hand DB4 Win95 orphan; DOS twin 0x1c170 (OpenFile create, _lwrite, Error creating / writing file)
+0x41c070 func mem_GetTotalPhys hand DB4 Win95 orphan; GlobalMemoryStatus dwTotalPhys; callee of mem_CheckLowMemory
+0x41c258 func mem_AllocTracked hand DB4 Win95 orphan; DOS twin 0x1c514 (crt_malloc, 0x24-byte header node in list DAT_00683688, 0x55 fences, not enough memory for %s)
+0x41d360 func ddraw_WaitForVerticalBlank hand DB4 Win95 orphan; IDirectDraw vtable +0x58 on DAT_0068361c (functional twin of DOS vga_WaitVSync 0x1f0a8)
+0x41d78c func ddraw_ReleaseBackDC hand DB4 Win95 orphan; IDirectDrawSurface::ReleaseDC (+0x68) on back surface; pair of ddraw_GetBackDC
+0x41d7a4 func ddraw_ClearBack hand DB4 Win95 orphan; DDBLTFX 100 bytes fill 0, Blt (+0x14) on back surface with SURFACELOST retry; twin of ddraw_ClearPrimary
+0x41d928 func ddraw_ColorKeyBltFastBack hand DB4 Win95 orphan; back surface GetSurfaceDesc, SetColorKey (+0x74), BltFast (+0x1c) loop with SURFACELOST retry
+0x41e79c func ddraw_GetPrimaryPixelFormat hand DB4 Win95 orphan; IDirectDrawSurface::GetPixelFormat (+0x54) on primary DAT_00683620, copies 4 mask dwords out
+0x41e800 func mem_CheckLowMemory hand DB4 Win95 orphan; DOS twin 0x1f174 (GlobalAlloc total phys, lock and step by 0x10, free; Not enough low memory test)
+0x41ee70 func ddraw_GetPrimarySurfaceDesc hand DB4 Win95 orphan; IDirectDrawSurface::GetSurfaceDesc (+0x58) on primary DAT_00683620
+0x41eee8 func ddraw_GetMonitorFrequency hand DB4 Win95 orphan; IDirectDraw::GetMonitorFrequency (+0x3c) on DAT_0068361c, returns 0 on failure
+0x41fca0 func win_MessageLoopUntilFlag hand DB4 Win95 orphan; GetMessage/TranslateMessage/DispatchMessage loop, exits on window flags +0xd / +0x1b or DAT_00683638
+0x420004 func rd_ByteStream hand DB4 Win95 orphan; reads one byte from *param_1 and advances the pointer
+0x420014 func rd_LittleEndian16Stream hand DB4 Win95 orphan; reads a little-endian word from *param_1 and advances; twin of rd_LittleEndian32Stream
+0x42008c func file_AppendTempWord hand DB4 Win95 orphan; file_AppendTemp(DAT_00686e24, 2 bytes); word twin of file_AppendTempByte
+0x4200ac func file_WriteTarga24 hand DB4 Win95 orphan; writes a 24-bit uncompressed Targa (type 2, BGR swap, bottom-up rows) through file_AppendTemp
+0x4201d8 func mem_AllocSwapArgs_4201d8 hand DB4 Win95 orphan; thin wrapper: mem_Alloc(param_3, param_1) with reordered arguments
+0x4201e8 func vid_SaveScreenshot hand DB4 Win95 orphan; windowed only: 15-bit to 24-bit convert, win_SaveTargaDialog Save Screenshot, file_WriteTarga24
+0x420354 func win_MessageBox hand DB4 Win95 orphan; MessageBoxA(DAT_00683630, text, caption, 0) wrapper
+0x421020 func spr_DrawScaledRLE16 hand DB4 Win95 orphan; DOS twin 0x207a8 (scaled RLE sprite blit into the 16-bit backbuffer with clipping)
+0x42a5b9 func game_UpdateFrame_part_42a5b9 hand DB4 Win95 orphan; Ghidra split piece of DOS game_UpdateFrame: snd_Command 0xb02c/0xb037 then tick loop shot_MoveAll/obj_UpdateAll/fx_UpdateAll
+0x44eaf1 func crt_RaiseFpe86_44eaf1 hand DB4 Win95 orphan; NT exception filter piece: DAT_00686f78=1, crt_CallSigIntHandler(0x86), crt_FpuEmuProbe, returns 0 or 1
+0x44eafb func crt_NtExceptionFilter_44eafb hand DB4 Win95 orphan; NT exception filter body: decodes FPU instruction to signal code, else Application Error message box or WriteFile of the exception text
+0x450351 func crt_CallThunk_450306_450351 hand DB4 Win95 orphan; thunk: calls func at 0x450306 and returns
+0x45035d func crt_Log2Thunk_45035d hand DB4 Win95 orphan; thunk to crt_log2Check (DOS crt_log2Check 0x69264)
+0x451288 func crt_AllocStream hand DB4 Win95 orphan; DOS twin 0x559ea (__allocfp: free FILE list DAT_006870e8 or static table DAT_0048bd04, else crt_malloc)

@@ -100,10 +100,10 @@
 0x237a0 func vid_Present hand profiler label copyvram, next to vid_CopyVram
 0x215ec func polyobj_Project hand projects a polyobject (rec +0x18 verts, +0xc, +0x1c, +8 z minus 0x2fa0) before gfx_DrawTriList
 0x21248 func spr_DrawRLE16 hand type-1 object sprite: RLE rows via short offset table at rec+0x18, 16-bit backbuffer DAT_000cefdc, pitch DAT_000cefc4
-0x20824 func spr_DrawScaledRLE16 hand scaled RLE sprite blit into the 16-bit backbuffer (called through a pointer)
+0x207a8 func spr_DrawScaledRLE16 hand DB4 entry moved from 0x20824 (mid-flow split); scaled RLE sprite blit into the 16-bit backbuffer (called through a pointer)
 0x2241c func hud_DrawRadarDot hand plots a 1..6 style dot at x,y into the backbuffer (style = arg4 >> 8)
 0x227c8 func hud_BuildRadarLines hand fills the line table DAT_001083c4 (pairs, 0x4000 default) for the radar sweep
-0x10e8d func quan_Quantize hand Wu colour quantizer: Histogram done / Moments done / Partition done / Only got %d boxes
+0x10d74 func quan_Quantize hand Wu colour quantizer: Histogram done / Moments done / Partition done / Only got %d boxes; DB4 entry moved from 0x10e8d (real head 0x10d74, old entry was mid-instruction)
 0x10200 func quan_Moments3d hand quantizer moments pass (called by quan_Quantize) audited DB2
 0x2330c func level15_DrawEffect hand level 15 effect: 16-step 565 grey ramp DAT_00212528 (n*0x421), centred 320x144 box
 0x1da5c func cd_Init hand MSCDEX not installed / version / Number of CD-drives
@@ -117,30 +117,22 @@
 0x10960 func quan_Maximize hand Wu quantizer best cut position | merged DOS-B1 the cut 0x109d0 quan_SplitBox (Wu quantizer: tries the three quan_Partition axes and returns the best variance; called by quan_NearestColour)
 0x10574 func quan_Top hand Wu quantizer Top/Bottom sums, arg2 = axis 0/1/2, 0x84-byte strides
 0x1006b func quan_Alloc hand allocates the quantizer tables (Quan: not enough space)
-0x34c84 func ai_Wander hand random target +0x60 from DAT_00211d18 & 0x7f every +0x54 ticks, 3x FUN_00034a27; audited DB2
 0x16ce4 func fx_BuildShadeTable hand 32 rows of 128 shorts from palette DAT_001985d8..dc; audited DB2
-0x1e88e func vga_PrintCrtcInfo hand prints VGA-display info / polarity / vertical total via dbg printf (mode table DAT_002c3a57)
+0x1e818 func vga_PrintCrtcInfo hand prints VGA-display info / polarity / vertical total via dbg printf (mode table DAT_002c3a57); DB4 entry moved from 0x1e88e (real head 0x1e818, old entry was mid-instruction)
 0x106e4 func quan_BoxFaceSum hand Wu quantizer: partition a box (int* box, dir, first, last); audited DB2 (was quan_Partition: Four-term inclusion-exclusion sum of moment table over a box face for dir 0/1/2 (Wu Top/Bottom), no partitioning.)
 0x10848 func quan_Variance hand Wu quantizer: weighted variance of a box (float10 return)
 0x12070 func pal_Build555Table hand builds the 16bpp 555 palette table DAT_0013e5c8 from the 8bpp palette DAT_00197078
 0x11938 func pal_InterpRow hand interpolates between two palette entries into a 16bpp row (shift = param_5); used by pal_BuildTables
-0x11240 func quan_BuildHistogram hand Wu quantizer: fills the 33x33x33 histogram (5-bit channel bins)
+0x111e4 func quan_BuildHistogram hand DB4 entry moved from 0x11240 (mid-flow split); Wu quantizer: fills the 33x33x33 histogram (5-bit channel bins)
 0x1324c func obj_Spawn hand takes an object from the free list DAT_0012c798, copies the 8-dword type record 0xc6e6c[type] (slots 0x10-0x13), calls the init; debug string trigger laver lort
 0x1a438 func menu_HandleKeys hand reads key buffer DAT_002c2518 (up/down DAT_000cef28 wraps 0..3) for the main menu; called by state_Menu
 0x18580 func anim_DrawFrameC hand draws an RLE anim frame (fn_41149c lookup in DAT_00138e00 table) into the 8bpp screen DAT_000cefe0; called by anim_UpdateC
-0x34b7c func ai_PickTargetSector hand entity logic using sector table DAT_00211d24 (8 bytes per cell) and random DAT_00211d1c; audited DB2
 0x1ef74 func vid_CycleMode hand debug key handler: DAT_002c66a6 -4/-5 steps the video mode index DAT_002c3a49 through the mode table DAT_000cd06c; called from dbg key path
 0x11a54 func pal_TintBuffer hand per-pixel tint of a 24bpp palette buffer (grey = avg rgb) by mode DAT_00212974 (+1 when debrief state 0xb not active and DAT_00138dc4 is 1/3); called by anim_UpdateC
-0x35b8d func ai_SetWaypoint hand sets entity target (+0x78/+0x7c) from grid cell * 256 + offset, random phase +0x80 (DAT_00211d1c); audited DB2
-0x1c5ce func mem_AllocTracked hand malloc (fn_44c56b) of a 0x24-byte node linked into list DAT_002c2594; strings not enough memory / total alloc
-0x361e9 func ai_HalveDistToTarget hand halves the distance to +0x30 each step while w*h+z < 0x1001; audited DB2 | DOS-B1 renamed from duplicate name ai_ApproachTarget
-0x3d58e func ai_FallToGround hand sets +0x64 = arg, damps +0x68 by 31/32 and adds velocity +0x78.. into position shorts +0xe/+0x10/+0x12; audited DB2 (was ai_MoveDamped: Damps +0x68, adds gravity +0x84 += 0x40, checks map_GetCell ground, spawns fx and sound on landing.)
+0x1c514 func mem_AllocTracked hand malloc (fn_44c56b) of a 0x24-byte node linked into list DAT_002c2594; strings not enough memory / total alloc; DB4 entry moved from 0x1c5ce (real head 0x1c514, old entry was mid-instruction)
 0x1ae6c func opt_MenuDifficulty hand options menu entry (Hard / None strings, menu widget PTR_DAT_000cce00 via fn_41aa5c / fn_41a910); flags DAT_002c242e / DAT_000ccdff | merged DOS-B1 the cut 0x1af9a opt_MenuDifficultyDraw (draw side of opt_MenuDifficulty: picks PTR_DAT_000ccccc[DAT_002c242e] label, widget DAT_000cce4e)
-0x329e9 func ai_SetWaypointRadius hand like ai_SetWaypoint but checks the squared distance against param_2 first; audited DB2 | merged DOS-B1 the cut 0x32c84 ai_SetFacing (asm-mangled: +0xa = arg>>7, +0x20 += (+8>>16)*0x300, +0xc from the target +0x18; audited DB2)
 0x1ab40 func opt_KeyDefine hand key-config entry: scans the key buffer DAT_002c2518 (codes < 0x7b) against name table PTR_DAT_000ccfe0 and stores up to 5 keys at +0xe
-0x1b029 func opt_KeyPreset hand key-config preset select (User Defined / Default strings, table DAT_000ccd10) on keys 0xcb/0xcd
-0x34805 func ai_SpawnAbove hand spawns type 5 object 0x200 above the entity via FUN_00024f0c, heading from the frame counter DAT_00211d18; audited DB2
-0x32000 func ai_SetWaypointB hand third ai_SetWaypoint variant; asm-mangled (func_0xc103df14); audited DB2
+0x1b020 func opt_KeyPreset hand key-config preset select (User Defined / Default strings, table DAT_000ccd10) on keys 0xcb/0xcd; DB4 entry moved from 0x1b029 (real head 0x1b020, old entry was mid-instruction)
 0x10cbc func quan_FillBox hand Wu quantizer: tags every histogram cell of a box (3 nested loops over box[0..5]) with the colour index
 0x1e618 func vesa_SetDisplayStart hand builds the DPMI real-mode register block DAT_002c29a0 (ax=0x4f07) after vga_SetPalette; called by vesa_Enumerate / vid_SwapPages / vid_SetMode
 0x11c88 func pal_BuildFadeTable hand 16-step fade table from the palette DAT_001976d8 into DAT_001395a8; called by pal_BuildTables and pal_Build555Table
@@ -153,7 +145,6 @@
 0x148a8 func lvl15_QueueEvent hand pushes (record + menu index*0xc, arg) into the 8-slot ring DAT_002124b8 / DAT_002124d8 (head DAT_002124a8)
 0x186ac func anim_DrawSpriteGrid hand draws 8x11 cells from the anim script sprite at DAT_002125f0/f4 into the 8bpp screen DAT_000cefe0 (pitch 0x500); called by anim_RunScript
 0x1b774 func opt_FormatMenuValues hand formats DAT_000ccd30 / DAT_000ccd34 / DAT_002c3984 into the option menu strings DAT_002c24a8 / b4 / c0 (itoa fn_44c3a5), label PTR_DAT_000ccd38[DAT_002c24ca]
-0x3c9be func ai_SetVelocityFromAngle hand velocity +0x58/+0x5c = -4*sin, 4*cos of the angle arg; audited DB2
 0x12c70 func level_InitPalette hand sets DAT_00211f5c / DAT_00212040 = 1, pal_Build555Table, player entity DAT_00211910 from ECX, fn_41354c; called by state_InGame
 0x1bdd8 func file_Open hand opens a file via FUN_0004b9ad (fopen) into DAT_000c24b4; prints file open error %s errorcode=%d; used by the minifont.bin loader
 0x1bc6c func file_OpenB hand second file_Open variant (fopen FUN_0004b9ad into DAT_000c243c, same error string); used by the file load error callers
@@ -162,29 +153,26 @@
 0x1ca10 func timer_UnregisterAll hand frees every DPMI real-mode callback in DAT_002c25a4 via int386(0x31); called by game_Exit
 0x1c860 func file_LoadWhole hand file_Open + mem_Alloc + read of a whole file (cache DAT_002c2548 / DAT_002c254c); called by debrief_Show
 0x19500 func anim_Start hand starts an anim script: DAT_00212964 = 0x32 ticks, DAT_00212578 / DAT_0021257c = script and frames; fn_411898(1) if DAT_00138de4
-0x1c0e9 func file_Write hand fwrite wrapper (FUN_0004bf10 / FUN_0004bbed) with Error writing %s %p %d; prologue mangled by __CHK
+0x1c0a0 func file_Write hand fwrite wrapper (FUN_0004bf10 / FUN_0004bbed) with Error writing %s %p %d; prologue mangled by __CHK; DB4 entry moved from 0x1c0e9 (real head 0x1c0a0, old entry was mid-instruction)
 0x23e78 func opt_StepCdVolume hand DAT_000ccd30 0..0x10 down/up by the char arg, then cd_SetVolume(v*0xffff>>4); called by main (keys)
 0x198be func grm_RequestState hand DAT_00212954 = requested state; only honoured when the game state DAT_000cef64 allows it (< 9, not in-level 0..2)
 0x13204 func level_FreeStatic hand frees the level static buffers DAT_00138df4 / df8 / dec / DAT_000c5fc8 when DAT_00212968 is set; called by game_CloseDown
 0x11bc0 func pal_From555 hand expands n 555 shorts to RGB bytes (x<<3); called by anim_UpdateC
 0x23ec4 func opt_StepSfxVolume hand DAT_000ccd34 0..0x10 down/up by the char arg, then snd_SetVolume; called by main (keys)
-0x1e6e8 func vesa_SetBank hand VESA ax=0x4f05 window bank switch through dpmi_SimulateRealInt(0x10); prints bank switch failed
+0x1e6cc func vesa_SetBank hand VESA ax=0x4f05 window bank switch through dpmi_SimulateRealInt(0x10); prints bank switch failed; DB4 entry moved from 0x1e6e8 (real head 0x1e6cc, old entry was mid-instruction)
 0x1e5dc func vesa_SetMode hand VESA ax=0x4f02 set mode (mode in CX) through dpmi_SimulateRealInt(0x10); called by vid_SetMode
-0x1c2e9 func dpmi_AllocDosBlock hand int386x(0x31) DPMI call, returns DAT_002c2554 (segment/selector); mangled stack args
+0x1c2d4 func dpmi_AllocDosBlock hand DB4 entry moved from 0x1c2e9 (mid-flow split); int386x(0x31) DPMI call, returns DAT_002c2554 (segment/selector); mangled stack args
 0x1aa9c func menu_Enter hand grm_Pop + level_FreeBuffers, difficulty DAT_002124a0 from table DAT_000cc5e4[DAT_002c242e], DAT_00212434 = 0; called by state_Menu
 0x1f830 func prof_PrintLine hand prints %-16s %9d profiler rows, at most 200 (DAT_002c48d8) via FUN_00054845 (printf); called by rend_DrawObjects | merged DOS-B1 the cut 0x1f886 prof_PrintFloatLine (prints a %-15s%8.3f profiler row via FUN_00054845 (printf), bumps DAT_002c48d8)
 0x1f070 func vga_SetTextMode hand once (DAT_002c2508) restores the text mode with int386(0x10); called by fatal_Error and game_Exit
 0x1cc94 func txt_CopyGlyph hand copies glyph bytes from param_2 to the glyph record (5 words header); called by txt_DrawString
-0x36c05 func ai_ShootAlongHeading hand sets locals -3 / -0x300 unless -0x100 (thunk_FUN_00036c16); asm-mangled; audited DB2 (was ai_ClampDescent: Plays sound, obj_Spawn ahead along heading with velocity -4sin/4cos and owner pointer.)
 0x23f04 func opt_ToggleCdMusic hand toggles DAT_002c24ca (CD music on/off): off = fn_41f160(stop track), on = 1; called by main (keys)
 0x1987c func vid_FreeBackbuffer hand DAT_00212954 = 1, DAT_000cc5bc = 1, mem_Free of the 16bpp backbuffer DAT_000cefdc; called by vid_SetMode
-0x349f8 func ai_HoldPosition hand target (+0x78/+0x7c) = own position (+0x30/+0x34); audited DB2
-0x1b489 func dbg_VideoModeKey hand debug key: stores SI into DAT_002c66a6, vid_CycleMode, DAT_002c2430 = 1, then the nothing handler
+0x1b444 func dbg_VideoModeKey hand debug key: stores SI into DAT_002c66a6, vid_CycleMode, DAT_002c2430 = 1, then the nothing handler; DB4 entry moved from 0x1b489 (real head 0x1b444, old entry was mid-instruction)
 0x1080d func quan_BoxSum hand Wu quantizer: inclusion-exclusion sum of a box from the cumulative moment table; asm-mangled
 0x11434 func rd_BigEndian32InPlace hand reads a big-endian dword and stores it back native at the same place (file headers are big-endian = Saturn-authored)
 0x1caf8 func txt_BigEndian32 hand returns a big-endian dword (glyph table offsets); called by txt_DrawString | DOS-B1 renamed from duplicate name rd_BigEndian32
 0x1e0b0 func vesa_CheckResult hand checks the VESA return ax in DAT_002c29bc (al == 0x4f and ah == 0); called by vesa_SetMode / vesa_SetBank / vesa_GetModeInfo
-0x48ae9 func lvl15_Finish hand lvl15_QueueEvent(&DAT_000c98d8) and sets DAT_00211938 / DAT_0021193c = -1
 0x11d38 func pal_CopyFadeRows hand copies 16 rows from DAT_0016ab18 to DAT_0013ea08; called by pal_BuildTables
 0x1f14c func vid_GetModeInfo hand returns mode table base DAT_000cd06c, DAT_002c3a04, DAT_002c3a08 and DAT_002c3a1a>>16 through 4 pointers; called by vid_CopyVram / vid_Present
 0x1ab18 func opt_KeyDefineStart hand begins key definition: PTR_DAT_000cce08 = record+0xe, count +0x15 = 0, fn_41aa5c(widget), calls the record handler; string None
@@ -192,13 +180,10 @@
 0x1aae8 func opt_MenuDifficultyEnter hand enters the difficulty submenu: label PTR_DAT_000ccd40[DAT_002118a0] (Easy...), record +8 = PTR_DAT_000ccde6, +0xc = 1
 0x18d00 func debrief_StepCounter hand decrements DAT_00212588 when arg2 is set, returns it; called by debrief_Show
 0x223e0 func hud_RestoreViewport hand restores backbuffer/width/height from DAT_000cefd8/d0/d4 (undo of hud_SetViewport); called by hud_Draw
-0x39085 func lvl15_QueueIfIdle hand lvl15_QueueEvent(&DAT_000c9ab8, 0) when DAT_00211954 == 0
-0x3ffe2 func ai_ClampAnimFrame hand clamps the anim word at *(+0x2c) to 0x803c; audited DB2
 0x1b37c func opt_MenuEnterB hand menu entry: nothing handler, record +8 = PTR_DAT_000cceea, +0xc = 1
 0x1c1e4 func dbg_WaitEscape hand spins until key 0x1c (Enter) in DAT_002c251c then fn_41fd04(0); called by mem_Alloc / mem_AllocTracked / mem_Free on errors
 0x1b3df func opt_MenuEnterC hand menu entry: nothing handler(…,1), DAT_002c2430 = CX
 0x1c974 func dpmi_SegOffToLinear hand (seg<<4) + off, masked to 20 bits
-0x3716b func fx_SpawnAtEntityB hand FUN_00023f38(+0x30, +0x34, 0); audited DB2
 0x1cae4 func txt_BigEndian16 hand returns a big-endian word (glyph table); called by txt_DrawString | DOS-B1 renamed from duplicate name rd_BigEndian16
 0x10058 func quan_AllocTables hand builds a 256-entry stack table and mem_Alloc(DAT_002c2320, DAT_002c2318*2); quantizer setup
 0x1f0c4 func vga_WaitRetrace hand spins on port 0x3da bit 3 (vertical retrace); called by vesa_SetDisplayStart
@@ -644,9 +629,7 @@
 0x1f560 func mem_PassThrough hand audited DB2; returns its argument; called by mem_Alloc, mem_AllocTracked, mem_Free, prof_PrintReport
 0x1bc62 func crt_ChdirThunk hand audited DB2 (was thunk_4b7be: Body is only crt_chdir(param_2), a thin forwarding thunk); calls FUN_0004b7be with the second argument
 0x1dff8 func vid_ProbeAlwaysOne hand audited DB2; returns 1; called by vid_InitDefaultMode
-0x28000 func nop_28000 hand audited DB2; empty; 0xcd090 and 0xcd188 hold the value 0x28000, probably constants
 0x1e9d4 func cfg_GetFlag_2c39fc hand audited DB2; returns DAT_002c39fc; called by s_nothing_41b5f4
-0x49c8a func nop_49c8a hand audited DB2; empty
 0x1baf1 func nop_1baf1 hand audited DB2; empty
 0x1b43f func nop_1b43f hand audited DB2; empty
 0x1000c func menu_InitStringPtrs hand audited DB2; fills DAT_000ccdee/ce3c/ce52/cf0c/cf8e from the PTR_ tables at 0xccccc/0xccc78/0xccd40/0xccd50/0xccd38 indexed by DAT_002c242e and DAT_00212974; the 17 data refs to 0x1000c are probably the constant 0x1000c
@@ -688,7 +671,7 @@
 0x4e580 func AIL_register_prefix_callback hand Miles wrapper, debug-logs its own name string
 0x4e690 func AIL_branch_index hand Miles wrapper, debug-logs its own name string
 0x4e750 func AIL_sequence_position hand Miles wrapper, debug-logs its own name string
-0x4e896 func AIL_channel_notes hand Miles wrapper, debug-logs its own name string
+0x4e890 func AIL_channel_notes hand Miles wrapper, debug-logs its own name string; DB4 entry moved from 0x4e896 (real head 0x4e890, old entry was mid-instruction)
 0x4e9a0 func AIL_controller_value hand Miles wrapper, debug-logs its own name string
 0x4eac0 func AIL_active_sequence_count hand Miles wrapper, debug-logs its own name string
 0x4ebc0 func AIL_unprotect_timbre hand Miles wrapper, debug-logs its own name string
@@ -696,7 +679,7 @@
 0x4ed60 func AIL_install_timbre hand Miles wrapper, debug-logs its own name string
 0x4ee80 func AIL_timbre_status hand Miles wrapper, debug-logs its own name string
 0x4efa0 func AIL_set_GTL_filename_prefix hand Miles wrapper, debug-logs its own name string
-0x4f09a func AIL_MDI_driver_type hand Miles wrapper, debug-logs its own name string
+0x4f050 func AIL_MDI_driver_type hand DB4 entry moved from 0x4f09a (jmp target inside); Miles wrapper, debug-logs its own name string
 0x4f150 func AIL_install_MDI_driver_image hand Miles wrapper, debug-logs its own name string
 0x4f370 func AIL_set_XMIDI_master_volume hand Miles wrapper, debug-logs its own name string
 0x4f430 func AIL_sequence_loop_count hand Miles wrapper, debug-logs its own name string
@@ -720,9 +703,9 @@
 0x504f0 func AIL_set_sample_user_data hand Miles wrapper, debug-logs its own name string
 0x505c0 func AIL_register_EOF_callback hand Miles wrapper, debug-logs its own name string
 0x506d0 func AIL_register_EOS_callback hand Miles wrapper, debug-logs its own name string
-0x5083d func AIL_register_EOB_callback hand Miles wrapper, debug-logs its own name string
+0x507e0 func AIL_register_EOB_callback hand Miles wrapper, debug-logs its own name string; DB4 entry moved from 0x5083d (real head 0x507e0, old entry was mid-instruction)
 0x508f0 func AIL_register_SOB_callback hand Miles wrapper, debug-logs its own name string
-0x50a13 func AIL_sample_position hand Miles wrapper, debug-logs its own name string
+0x50a00 func AIL_sample_position hand Miles wrapper, debug-logs its own name string; DB4 entry moved from 0x50a13 (real head 0x50a00, old entry was mid-instruction)
 0x50b00 func AIL_set_sample_position hand Miles wrapper, debug-logs its own name string
 0x50bc0 func AIL_sample_buffer_info hand Miles wrapper, debug-logs its own name string
 0x50d00 func AIL_load_sample_buffer hand Miles wrapper, debug-logs its own name string
@@ -731,7 +714,7 @@
 0x51010 func AIL_install_DIG_driver_image hand Miles wrapper, debug-logs its own name string
 0x51290 func AIL_digital_master_volume hand Miles wrapper, debug-logs its own name string
 0x51390 func AIL_set_digital_master_volume hand Miles wrapper, debug-logs its own name string
-0x51497 func AIL_sample_loop_count hand Miles wrapper, debug-logs its own name string
+0x51450 func AIL_sample_loop_count hand Miles wrapper, debug-logs its own name string; DB4 entry moved from 0x51497 (real head 0x51450, old entry was mid-instruction)
 0x51550 func AIL_sample_pan hand Miles wrapper, debug-logs its own name string
 0x51750 func AIL_sample_playback_rate hand Miles wrapper, debug-logs its own name string
 0x51850 func AIL_sample_status hand Miles wrapper, debug-logs its own name string
@@ -749,7 +732,7 @@
 0x52180 func AIL_set_sample_file hand Miles wrapper, debug-logs its own name string
 0x522a0 func AIL_init_sample hand Miles wrapper, debug-logs its own name string
 0x52350 func AIL_release_sample_handle hand Miles wrapper, debug-logs its own name string
-0x52414 func AIL_allocate_file_sample hand Miles wrapper, debug-logs its own name string
+0x52400 func AIL_allocate_file_sample hand Miles wrapper, debug-logs its own name string; DB4 entry moved from 0x52414 (real head 0x52400, old entry was mid-instruction)
 0x52520 func AIL_allocate_sample_handle hand Miles wrapper, debug-logs its own name string
 0x528e0 func AIL_uninstall_driver hand Miles wrapper, debug-logs its own name string
 0x52990 func AIL_install_driver hand Miles wrapper, debug-logs its own name string
@@ -761,7 +744,7 @@
 0x52e00 func AIL_start_all_timers hand Miles wrapper, debug-logs its own name string
 0x52e80 func AIL_start_timer hand Miles wrapper, debug-logs its own name string
 0x52f30 func AIL_interrupt_divisor hand Miles wrapper, debug-logs its own name string
-0x53040 func AIL_set_timer_divisor hand Miles wrapper, debug-logs its own name string
+0x53010 func AIL_set_timer_divisor hand Miles wrapper, debug-logs its own name string; DB4 entry moved from 0x53040 (real head 0x53010, old entry was mid-instruction)
 0x530d0 func AIL_set_timer_frequency hand Miles wrapper, debug-logs its own name string
 0x53190 func AIL_set_timer_period hand Miles wrapper, debug-logs its own name string
 0x53250 func AIL_set_timer_user hand Miles wrapper, debug-logs its own name string
@@ -970,7 +953,7 @@
 0x656a1 func crt_SetDsLimit hand Watcom heap growth core: grows the DS segment limit to param_1 (DOS int 21h 0xED call under the plain extender, DPMI otherwise), returns the old break
 0x55400 func crt_Init387Emulator hand __sys_init_387_emulator core: sets _8087 = 3, records CR0 EM/MP bits, hooks int 7 (_int7) through the IDT or DOS 2507h
 0x655d9 func crt_sbrk hand Watcom sbrk: ensures the DS limit via crt_SetDsLimit then grows by param_1, errno 9 on a non-positive request
-0x60847 func ail_RedbookBuildPlayReq hand Miles redbook: fills the MSCDEX play-audio request (command 0x84) in the block DAT_002c6c20 from a start frame and length, audited DB2
+0x607f0 func ail_RedbookBuildPlayReq hand Miles redbook: fills the MSCDEX play-audio request (command 0x84) in the block DAT_002c6c20 from a start frame and length, audited DB2; DB4 entry moved from 0x60847 (real head 0x607f0, old entry was mid-instruction)
 0x4b8b0 func crt_OpenStream hand Watcom fopen core: stores the mode flags in the FILE +0xc, crt_DosOpen into +0x10, frees the FILE with FUN_00055a90 on failure
 0x61ae4 func crt_BuildArgv hand Watcom startup: crt_ParseCmdArgs on the command tail DAT_000cda90, allocates argv with fn_44c56b, fills _argc DAT_000cda0c and _argv DAT_000cda10
 0x5b490 func ail_DigInitOnce hand AIL_API_install_DIG_driver_file helper: on first use (DAT_000ce850) FUN_00057bb0 and a run of FUN_00057af0 slot inits
@@ -1091,7 +1074,7 @@
 0x65f2d func dig_MixCopy8SMonoR hand mixer output: right of each int pair, high byte signed, mono 8-bit
 0x62610 func fpe_SetStatusFlag hand ors a status bit; when unmasked copies the 27-dword emulator env and raises, from the __Emu ops
 0x5f470 func ail_MdiFlushSysexBuffer hand sends the pending sysex bytes (+0x1ac count) through AIL_call_driver and clears +0x1ac/+0x1b0
-0x69de8 func fpe_DispatchEntry hand Sets [0xcda9c]=0xcebaa (emu context), movzx eax,cl, call dword [0xcdac5], then restores ss from [0xcedaa] and esp from [0xcedac], pops [0xcda9c], clears [0xcedaa], fnclex: emulator entry stub. | audited DB3
+0x69d21 func fpe_DispatchEntry hand Sets [0xcda9c]=0xcebaa (emu context), movzx eax,cl, call dword [0xcdac5], then restores ss from [0xcedaa] and esp from [0xcedac], pops [0xcda9c], clears [0xcedaa], fnclex: emulator entry stub. | audited DB3; DB4 entry moved from 0x69de8 (real head 0x69d21, old entry was mid-instruction)
 0x6611c func dig_MixCopy8SSplitRL hand mixer output: high bytes signed into two byte buffers, right first
 0x660c3 func dig_MixCopy8SSplitLR hand mixer output: high bytes signed into two byte buffers, left first
 0x4a033 func lvl15_Stage2Start hand Pointer slot 0xc90a4 in the level-15 handler table 0xc9090.. (neighbours c90a0 lvl_Script_c90a0_Update, c90a8 lvl15_AlarmSpriteUpdate); raises stage DAT_002125d8 to at least 2 (c9094 raises to 1, c90b4 to 3), then cut_Leave if DAT_00212434 else DAT_00212408 = 0xc952c; no cutscene entry. | audited DB3 (was lvl15_EnterCutscene)
@@ -1195,7 +1178,7 @@
 0x5802f func ail_TimerPeriodToDivisor hand converts a timer period to the 8254 divisor; below 0xd68d scales by 10000 over 0x20bc
 0x55daf func crt_fgetcFill hand crt_FillBuffer then returns the next byte or -1
 0x60d40 func ail_BcdToBin hand converts a BCD byte to binary (redbook MSF fields)
-0x58278 func ail_NopReturn hand empty function, a default callback
+0x5825c func ail_DpmiCallbackThunk hand self-modifying callback thunk template: 0x9999 selectors/addresses patched at runtime, switches ds/es/ss then retf (was ail_NopReturn, a false entry); DB4 entry moved from 0x58278 (real head 0x5825c, old entry was mid-instruction)
 0x6a02f func crt_FpeRestoreIntVectors hand int 21 ah=25 restores the real-mode and protected-mode FPE interrupt vectors at __Fini_FPE_handler
 0x68a6a func crt_DpmiIntVector hand int 21 extender call with the DPMI function number (04 when _Extender is 2..8), used by the int 1b / 23 hooks
 0x66ca3 func dig_MixMerge16SMonoNoVolTable hand resampling merge of signed 16-bit mono into one int channel via the DAT_000cea78 step table, no volume
@@ -1330,7 +1313,7 @@
 0x65c70 func dig_MixCopy8UMono_NoClamp hand mixer output: high byte xor 0x80 of each int, mono, no clamp
 0x57af0 func ail_RealModeAllocWrapper hand thin wrapper around ail_RealModeAlloc used by the InitOnce helpers
 0x57ad0 func ail_RealModeFreeWrapper hand thin wrapper around ail_RealModeFree used by the ReleaseOnce helpers
-0x4d47c func crt_SaveFramePointer hand audited DB2: stores EBP-1 into DAT_002c6738 (stack frame anchor for the runtime)
+0x4d3f0 func AIL_redbook_eject hand Miles wrapper, logs its name, calls ail_RedbookReleaseRequest (was crt_SaveFramePointer, a false entry); DB4 entry moved from 0x4d47c (real head 0x4d3f0, old entry was mid-instruction)
 0x4c0e9 func crt_exitWithCode hand runs the two exit hooks PTR_FUN_000cd7b0/000cd7b4, __FiniRtns(0,0xff), then int 21 ah=4c
 0x69d0c func crt_FpeInstallTail hand empty tail reached from __Init_FPE_handler and crt_FpeEnsureInstalled
 0x653eb func crt_SetHandleFlagsOpen hand stores flags | 0x4000 into the handle flag table PTR_DAT_000cea54[handle]
@@ -1501,7 +1484,7 @@
 0x52620 func ail_UninstallDigDriver hand audited DB2: Miles digital driver uninstall wrapper called by snd_Shutdown (ail_UninstallDriverWrapper, once counter DAT_002c6738)
 0x1dda0 func cd_StopAudio hand audited DB2 (was cd_PrepareRequest: Builds MSCDEX request command 0x85 (stop audio) and issues int 2Fh AX=1510h via dpmi_SimulateRealInt; called on Silent.): builds the MSCDEX request block DAT_002c3990 (len 0x10, cmd 0x85) and the real mode registers DAT_002c29a0 (cd_PlaySong, file_LoadBig)
 0x181a0 func debrief_SetPercentDigits hand writes a 0-100 value as three ASCII digits into the debriefing strings DAT_000c9c50 and DAT_000c9ce8 (ex fn_4181ac)
-0x4e2c0 func AIL_wrap_SampleSetUserData hand audited DB2: Miles API wrapper (log string, once counter DAT_002c6738, ail_LogResult) around ail_SampleSetUserData; the name string was not recovered
+0x4e250 func AIL_wrap_SampleSetUserData hand audited DB2: Miles API wrapper (log string, once counter DAT_002c6738, ail_LogResult) around ail_SampleSetUserData; the name string was not recovered; DB4 entry moved from 0x4e2c0 (real head 0x4e250, old entry was mid-instruction)
 0x11628 func floor_BuildRowPointers hand audited DB2 (ex fn_411634): from the view width DAT_000cefbc (0x40 / 0x80 steps) fills the row table DAT_000ff5a4 (0x11c per entry) with pointers into the frame DAT_000cefdc using the pitch at 0xcefc6
 0x11500 func map_SwapRecordsBigEndian hand audited DB2 (was map_LinkRecordRuns: Walks 0xc-byte records byte-swapping shorts and dword with rd_BigEndian16InPlace/rd_BigEndian32, plus short runs; no linking.) (ex fn_41150c): walks 0xc-byte records from param_1, fn_41149c measures a run, fn_41146c links the four shorts, +8 gets the run id; builds the linked record list
 0x1386c func map_TickCellSwapQueue hand ring of 0x20 cell swaps (DAT_00211d44 x, DAT_00211d48 y, DAT_00211d4c countdown; head DAT_00211d3c tail DAT_00211d40): counts down and reverts with map_SwapCellType when a timer expires (ex fn_413878)
@@ -1512,7 +1495,7 @@
 0x4c264 func crt_free hand free (ex fn_44c678): finds the heap segment (DAT_000cd9cc list, cache DAT_002c6734) that holds the block, then crt_HeapFree (ail_FreeWrapper, crt_FreeWrapper, crt_GetEnvVar)
 0x137ec func map_QueueCellSwap hand changegndpnt: swaps a cell type now (map_SwapCellType) and, when param_3 is set, pushes a timed revert into the 0x20-entry ring DAT_00211d44 (debug print changegndpnt no. %d-%d) (ai_ChangeGroundPoint)
 0x1b6f8 func opt_CycleDetailLevel hand audited DB2: cycles the three-way option DAT_00212974 (OFF / High ... text pointers PTR_DAT_000ccd50) backwards when key byte DAT_002c2518+0xcd is clear, writes the label DAT_000ccf0c and redraws (opt_DrawMenuItem)
-0x4f2e9 func AIL_wrap_SampleGet1b4 hand audited DB2: Miles API wrapper (once counter DAT_002c6738, ail_LogPrintf) around ail_SampleGet1b4; first bytes are padding, name string not recovered
+0x4f270 func AIL_wrap_SampleGet1b4 hand audited DB2: Miles API wrapper (once counter DAT_002c6738, ail_LogPrintf) around ail_SampleGet1b4; first bytes are padding, name string not recovered; DB4 entry moved from 0x4f2e9 (real head 0x4f270, old entry was mid-instruction)
 0x65400 func crt_InitIobBuffers hand Watcom __InitFiles: walks the _iob table DAT_000cd7b8 and crt_malloc(8) a header per open stream, fatal Not enough memory to allocate file structure
 0x1d074 func snd_StopAllSamples hand AIL_end_sample on every active sample slot (count DAT_002c38fc, handles DAT_002c3940) and resets the three 0x488-byte slot tables at DAT_002c2b64 to -1 (snd_Shutdown) (ex fn_41fae4)
 0x13540 func map_RefreshPlayerWindow hand recomputes the player cell window (ex fn_41354c): cell x/y = (pos >> 16 - 0x7c) >> 3 into player +0x1c/+0x20, then 0x20 calls of map_FillCellRow over the cell table DAT_0010a744 (level_PlayerTriggers, player_Respawn)
@@ -1626,3 +1609,42 @@
 0x48390 func lvl_StubEmpty hand audited DB3: unreferenced empty no-argument stub; was uncovered
 0x4985a func lvl_Script_c77f0_Update hand DB3 gap scan (push 0x20; __CHK after a ret, table ref 0xc77f0): DAT_00211ed0/4/8 = 0x28/0x40/1 then lvl_SpawnRectFx(rec, 0x32); same shape as lvl_Script_c7900_Update
 0x4a985 func lvl_Script_c8ae4_Update hand DB3 gap scan (push 0x20; __CHK after a ret, table ref 0xc8ae4): sets DAT_00212400/4 = 0x59e/0x2c3 (and 16.16 copies at DAT_00211900/4), lvl15_QueueEvent(0xc9b78, 0), DAT_00211ed0/4/8 = 0x20/0x40/1, lvl_SpawnRectFx(rec, 8)
+0x1af40 func opt_CycleSetting242e hand DB4 new: options menu left/right cycles DAT_002c242e 0..8, updates row text
+0x1b398 func opt_MenuResolution hand DB4 new: options resolution row left/right, updates DAT_002c24f8 and row
+0x1b980 func opt_MenuCdVolume hand DB4 new: CD volume 0..15 step, redraws row, cd_SetVolume(v*0xffff>>4)
+0x1ba98 func opt_MenuCdMusic hand DB4 new: toggles CD music DAT_002c24ca, cd_StopAudio or cd_PlaySong, redraw
+0x1bc50 func file_ChdirStopCd hand DB4 new: stops CD audio if active then crt_chdir
+0x1c040 func file_UnlinkStopCd hand DB4 new: stops CD audio if active then crt_unlink
+0x1c138 func file_ExistsCheck hand DB4 new: stops CD audio, fopen test; returns -1 if open fails else 0
+0x1c200 func input_WaitEnterOrEsc hand DB4 new: wait for Enter(1) or Esc(0) key press then release, return which
+0x1f86c func prof_PrintLineLimit200 hand DB4 new: prints profiler line via ail_sprintf only while count DAT_002c48d8 < 200
+0x4b9b7 func crt_StreamLookupMove hand DB4 new: find stream by handle in list, move to front or fclose if open
+0x4f9c0 func AIL_set_sequence_tempo hand DB4 new: Miles wrapper, void, calls ail_SampleSetValueLocked (sets +0x50 field)
+0x51130 func AIL_digital_configuration hand DB4 new: Miles wrapper, ail_DigGetDriverInfo returns driver info and name
+0x51650 func AIL_sample_volume hand DB4 new: Miles wrapper, calls API at 0x59d50 between sample_pan and playback_rate
+0x54c22 func crt_ExpFpu hand DB4 new: exp(x) via 2^(x*log2e) using f2xm1/fscale, guarded by compare
+0x5dbe0 func xmi_ProcessSequences hand DB4 new: XMIDI timer tick: per sequence note-offs, events, meta, sysex, tempo, volume ramps
+0x615f0 func ail_StartupInstall hand DB4 new: calls init cb, installs MDI INI, sets 3 prefs, installs DIG driver, 1 on success
+0x1c05c func file_RecreateEmptyFile_c25d4 hand DB4 orphan: stops CD audio, unlinks fixed file, reopens it, fatal on fail, closes
+0x1c170 func file_WriteBufferToFile hand DB4 orphan: stops CD audio, opens path (mode c2620), fwrite len bytes, fatal on error, close
+0x1e9cc func sys_ReturnOne_1e9cc hand DB4 orphan: stub that returns 1
+0x1f120 func sys_ClearKeyboardTable hand DB4 orphan: zeroes dwords from sys_KeyboardIsr2 table up to 0xafa00
+0x1f1f8 func cfg_IncCounter_2c3a68 hand DB4 orphan: increments global counter DAT_002c3a68
+0x1f4cc func sys_GetKeyboardIsr2Ptr hand DB4 orphan: getter returning sys_KeyboardIsr2 address
+0x54c8c func crt_Thunk_54c2a hand DB4 orphan: wrapper that calls code at 0x54c2a
+0x55665 func crt_FpuHookInit_cd7a9 hand DB4 orphan: if DAT_000cd7a9 set, installs fnsave/frstor hooks, then FpuInfCompareCheck
+0x556ba func crt_MapDosErrToErrnoRet hand DB4 orphan: maps DOS error code via table to errno, returns -1 on error else value
+0x56d41 func crt_SaveRegsToStruct hand DB4 orphan: stores EAX..EDI, segment regs and flags into a register struct (segread/intr style)
+0x57322 func crt_HeapGrowDpmiBlock hand DB4 orphan: resizes heap segment via DPMI int 31h, relinks and frees the remainder
+0x57ac0 func ail_GetGlobal_cdae0 hand DB4 orphan: getter returning DAT_000cdae0
+0x57d80 func ail_SwapHook_cdae8 hand DB4 orphan: stores new value in DAT_000cdae8, returns the old one
+0x58525 func crt_SaveStackState hand DB4 orphan: writes SS, ESP and EBP-based values to out pointers (stack switch helper)
+0x59030 func ail_GetErrorBuf_2c6840 hand DB4 orphan: getter returning address of DAT_002c6840 (Miles error text buffer)
+0x59d50 func ail_GetField50 hand DB4 orphan: returns field at +0x50 of a record, 0 if pointer null
+0x5f4c0 func dig_MidiMsgDataLen hand DB4 orphan: data byte count for a MIDI status byte (3 for 80/90/A0/B0/E0, 2 for C0/D0, 0 else)
+0x68443 func crt_SetMatherrHook_ceb2c hand DB4 orphan: stores handler pointer into PTR_crt_matherrDefault_000ceb2c
+0x684c0 func crt_SetVar_ceb30 hand DB4 orphan: stores param into global DAT_000ceb30
+0x692ad func crt_Thunk_69262 hand DB4 orphan: wrapper that calls code at 0x69262
+0x69ec1 func fpe_StoreOrPopByModrm hand DB4 orphan: 387 emu dispatch on modrm bits, GetInf/StoreResultFloat or stack rotate
+0x69f39 func fpe_RotateStackByCount hand DB4 orphan: 387 emu rotates ST registers by count then loads ST0 from memory operand
+0x56dc5 func crt_IntStubTable hand DB4 orphan: 255 int N; ret stubs (3 bytes each) used by the int386 path to raise a computed interrupt number
