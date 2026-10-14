@@ -1,4 +1,4 @@
-0x548f0 func _cstart_ hand Watcom DOS4GW C start (entry 0x54878 thunks here)
+0x548f0 func _cstart_ hand Watcom DOS4GW C start (entry 0x54878 thunks here) (bsim audit 10-14: was _cstart)
 0x61a4a func __InitRtns hand Watcom priority init table 0xcedb6..0xcedec, 6-byte entries
 0x61a95 func __FiniRtns hand Watcom fini table 0xcedec..0xcedf8
 0x619fb func __CMain hand calls main(argc,argv) then exit
@@ -965,19 +965,19 @@
 0x575b6 func crt_GrowHeapExtender hand Watcom heap growth under the DOS extender: FUN_000577b2 rounds the request, crt_DpmiAllocDosMem for extender type 1, else DOS allocation
 0x55dde func crt_FillBuffer hand Watcom __fill_buffer: allocates the stream buffer on first use, flushes a dirty read-write stream, resets the pointer and refills with read
 0x4a0df func lvl15_Start hand level 15 script init: 200 tick timer, lvl_SpawnRectFx 0x1e, two fx_SpawnInRect bursts, DAT_00211958 = 1 and event 0xc9ae8, audited DB2
-0x6489a func fpe_ClassifyOperand hand 387 emulator helper (caller fpe_DecodeInstruction): tests the instruction mask word in the table PTR_DAT_00062054 and classifies the 80-bit operand (zero, sign)
+0x6489a func rt_FpuEmuExamine hand 387 emulator helper (caller fpe_DecodeInstruction): tests the instruction mask word in the table PTR_DAT_00062054 and classifies the 80-bit operand (zero, sign) (bsim audit 10-14: was fpe_ClassifyOperand)
 0x559ea func crt_AllocStream hand Watcom __allocfp: scans the static FILE table DAT_000cd7b8..DAT_000cd9c0 (0x68 bytes each) for a free slot, else allocates a 0x22-byte FILE with fn_44c56b
 0x55f1f func crt_fputc hand Watcom fputc core: checks the write flag (errno 4 on a read-only stream), allocates the buffer on first use, stores the byte and flushes on newline or full buffer
 0x684c6 func crt_FmtExponent hand Watcom printf helper: writes the sign and 2 or 3 digit exponent after e or E for the e and G conversions
 0x570c2 func crt_HeapAllocFromSeg hand Watcom near heap allocate inside one heap segment: rounds the size to 8 (+0x10 minimum), first-fit walk from the rover +0xc or +0x28, limit +0x14
 0x59580 func ail_ParseHexOrDec hand Miles ini reader helper: parses a number with the digit table 0123456789ABCDEF (hex when prefixed), returns the value and sets local flags
 0x5a7a0 func ail_DigDriverShutdown hand Miles DIG shutdown: pending driver call +0x58 flushed, dig_ buffers released via FUN_0006778e and FUN_000676fb twice, AIL_delay, timer handle released, FUN_00057c50 and FUN_00057d20
-0x57bb0 func ail_RealModeAlloc hand Miles real-mode memory helper: zeroes a 7-dword DPMI register block, allocates DOS memory and returns the segment and selector (callers AIL_startup and the file sample loader)
-0x57b10 func ail_RealModeFree hand Miles real-mode memory helper: computes the paragraph span between two addresses, zeroes a DPMI register block and frees the DOS memory
+0x57bb0 func dpmi_LockRegion hand Miles real-mode memory helper: zeroes a 7-dword DPMI register block, allocates DOS memory and returns the segment and selector (callers AIL_startup and the file sample loader) (bsim audit 10-14: was ail_RealModeAlloc)
+0x57b10 func dpmi_UnlockRegion hand Miles real-mode memory helper: computes the paragraph span between two addresses, zeroes a DPMI register block and frees the DOS memory (bsim audit 10-14: was ail_RealModeFree)
 0x57dae func ail_ReadTimer0 hand Miles timer: latches PIT counter 0 (out 0x43 then two in 0x40) and converts it to elapsed microseconds against the reload DAT_000cdc9a (0x10000 when 0)
 0x5e700 func ail_XmidiReleaseChannel hand Miles XMIDI: frees the one channel slot equal to param_2 in +0x55c..+0x5d8 and flushes the pending driver call +0x1ac (callers lock_channel, init_sequence, quick_play)
 0x68c78 func crt_DetectDpmiHost hand Watcom runtime: once (DAT_000ceb4c) checks for a DPMI host with int 31h 0x400 or int 2Fh and records the result
-0x676fb func dig_BuildFormatFlags hand Miles DIG: builds the DMA format word DAT_000cea60 from the driver record (+0x20 low bits, +0x1c 16-bit and stereo flags 0x10 0x20, +0x68 channels 0x40) then sets up the buffer at +0x4c
+0x676fb func ail_DigFillSilence hand Miles DIG: builds the DMA format word DAT_000cea60 from the driver record (+0x20 low bits, +0x1c 16-bit and stereo flags 0x10 0x20, +0x68 channels 0x40) then sets up the buffer at +0x4c (bsim audit 10-14: was dig_BuildFormatFlags)
 0x691cf func crt_FloatCvt hand Watcom printf helper: handles the inf and nan exponent 0x7ff0 cases (sign, strings from DAT_000c4e5c) before the digit conversion for f e and G
 0x69648 func crt_FloatTrunc hand Watcom modf/trunc helper on a double: copies the 8 bytes, masks the fraction bits by the unbiased exponent (0x3ff.. up to 0x433 = 2^52)
 0x4bca0 func crt_fclose hand Watcom fclose core: returns -1 on a closed FILE, flushes a dirty stream, closes the handle with FUN_0004bbab and frees the FILE
@@ -990,7 +990,7 @@
 0x58990 func ail_TimerShutdownOnce hand Miles timer subsystem release (DAT_000ce7c8): ail_RealModeFree then five FUN_00057ad0 slot releases
 0x697b3 func crt_signal hand Watcom signal(): valid signals 1..12, installs the default handler FUN_00069774, SIGINT (4) hooks or unhooks int 23h, SIGBREAK hooks int 1Bh
 0x543e0 func ail_LogInitOnce hand Miles debug log subsystem init once (DAT_000cd9dc): ail_RealModeAlloc then five FUN_00057af0 slot inits with the buffer DAT_002c6744, called from AIL_startup
-0x902b2 func sys_KeyboardIsr hand keyboard interrupt handler: reads port 0x60, pulses port 0x61 bit 7, 0xe0 prefix sets the extended flag at DAT_002d09c0+0x100, else stores make/break into the key table
+0x902b2 func dos_KbdIntHandler hand keyboard interrupt handler: reads port 0x60, pulses port 0x61 bit 7, 0xe0 prefix sets the extended flag at DAT_002d09c0+0x100, else stores make/break into the key table (bsim audit 10-14: was sys_KeyboardIsr)
 0x577b2 func crt_RoundHeapRequest hand Watcom heap growth helper: rounds a request up to 8 (+8 under the DOS extender types 1 and 9, else the DPMI granularity from FUN_00057495)
 0x69154 func crt_fgets hand Watcom fgets core: allocates the buffer on first use, switches a read-write stream to read mode (flag bits 1 and 2), copies up to the newline
 0x61e10 func crt_FpuEmuCompareFlags hand Watcom 80-bit float emulation: builds the compare status word (0x81xx classes, 0x1106 for a negative case 6) from the operand class byte
@@ -1023,7 +1023,7 @@
 0x666f3 func dig_MixCopy8SplitRL hand mixer output: clamp int pairs to 8-bit unsigned, two buffers, right first
 0x6663c func dig_MixCopy8SplitLR hand mixer output: clamp int pairs to 8-bit unsigned, two buffers, left first
 0x6642b func dig_MixCopy8StereoRL hand mixer output: clamp int pairs to 8-bit unsigned interleaved, right first
-0x66378 func dig_MixCopy8StereoLR hand mixer output: clamp int pairs to 8-bit unsigned interleaved, left first
+0x66378 func ail_MixOut8Interleaved hand mixer output: clamp int pairs to 8-bit unsigned interleaved, left first (bsim audit 10-14: was dig_MixCopy8StereoLR)
 0x6658d func dig_MixCopy16SplitRL hand mixer output: clamp int pairs to 16-bit (xor 0x8000), two buffers, right first
 0x664de func dig_MixCopy16SplitLR hand mixer output: clamp int pairs to 16-bit (xor 0x8000), two buffers, left first
 0x662cd func dig_MixCopy16StereoRL hand mixer output: clamp int pairs to 16-bit (xor 0x8000) interleaved, right first
@@ -1035,12 +1035,12 @@
 0x541f0 func ail_LogFormatString3 hand vsprintf (DAT_000cdaf4) three-arg variant into a 128-byte buffer
 0x572c6 func crt_HeapReleaseSegments hand walks heap segment list DAT_000cd9cc, unlinks empty ones and DPMI 0502 frees them
 0x66222 func dig_MixCopy16StereoLR hand mixer output: clamp int pairs to 16-bit (xor 0x8000) interleaved, left first
-0x65f7b func dig_MixCopy8MonoL hand mixer output: left of each int pair, high byte xor 0x80, mono 8-bit
-0x65ed4 func dig_MixCopy8MonoR hand mixer output: right of each int pair, high byte xor 0x80, mono 8-bit
+0x65f7b func ail_MixOut8PackedSwap hand mixer output: left of each int pair, high byte xor 0x80, mono 8-bit (bsim audit 10-14: was dig_MixCopy8MonoL)
+0x65ed4 func ail_MixOut8Packed hand mixer output: right of each int pair, high byte xor 0x80, mono 8-bit (bsim audit 10-14: was dig_MixCopy8MonoR)
 0x660c5 func dig_MixCopy8USplitRL hand mixer output: high bytes xor 0x80 into two byte buffers, right first
 0x66022 func dig_MixCopy8USplitLR hand mixer output: high bytes xor 0x80 into two byte buffers, left first
 0x66754 func dig_MixCopy16SSplitRL hand mixer output: clamp to signed 16-bit into two buffers, right first
-0x6669d func dig_MixCopy16SSplitLR hand mixer output: clamp to signed 16-bit into two buffers, left first
+0x6669d func ail_MixOut16SplitSigned hand mixer output: clamp to signed 16-bit into two buffers, left first (bsim audit 10-14: was dig_MixCopy16SSplitLR)
 0x61740 func ail_RealModeStubInitOnce hand audited DB2 once-guarded (DAT_000ce908) real-mode block alloc and three 0x57af0 calls
 0x652ee func crt_RestoreWinFpuState hand audited DB2 int 2f FA21/FA1F Windows FPU notify when DAT_000ce9ed, from crt_Int7Restore
 0x6a0fa func crt_FpeGetVectors hand DPMI 0204/0200 reads the FPE interrupt vectors into __PMSeg/__PMAddr, from __Init_FPE_handler
@@ -1048,7 +1048,7 @@
 0x54250 func ail_LogFormatString2 hand vsprintf (DAT_000cdaf4) two-arg variant into a 128-byte buffer
 0x65396 func crt_GetHandleFlags hand handle table PTR_DAT_000cea54 lookup below DAT_000cea00, sets 0x40 and probes device bit 0x20
 0x6648a func dig_MixCopy16SStereoRL hand mixer output: clamp to signed 16-bit interleaved, right first
-0x663d7 func dig_MixCopy16SStereoLR hand mixer output: clamp to signed 16-bit interleaved, left first
+0x663d7 func ail_MixOut16InterleavedSigned hand mixer output: clamp to signed 16-bit interleaved, left first (bsim audit 10-14: was dig_MixCopy16SStereoLR)
 0x665ea func dig_MixCopy16SSplitRL_v2 hand mixer output: clamp to signed 16-bit into two buffers, right first (second copy)
 0x6653b func dig_MixCopy16SSplitLR_v2 hand mixer output: clamp to signed 16-bit into two buffers, left first (second copy)
 0x673b6 func dig_MixMerge16StereoSwap hand resampling merge of 16-bit unsigned stereo source into int pairs, channels swapped, volume table param_2
@@ -1072,9 +1072,9 @@
 0x9023e func sys_UnhookInt8Int9 hand DPMI 0201/0205 restore int 9 vectors and 0101 free the DOS block, from game_Exit
 0x65fd4 func dig_MixCopy8SMonoL hand mixer output: left of each int pair, high byte signed, mono 8-bit
 0x65f2d func dig_MixCopy8SMonoR hand mixer output: right of each int pair, high byte signed, mono 8-bit
-0x62610 func fpe_SetStatusFlag hand ors a status bit; when unmasked copies the 27-dword emulator env and raises, from the __Emu ops
+0x62610 func rt_FpuEmuRaiseException hand ors a status bit; when unmasked copies the 27-dword emulator env and raises, from the __Emu ops (bsim audit 10-14: was fpe_SetStatusFlag)
 0x5f470 func ail_MdiFlushSysexBuffer hand sends the pending sysex bytes (+0x1ac count) through AIL_call_driver and clears +0x1ac/+0x1b0
-0x69d21 func fpe_DispatchEntry hand Sets [0xcda9c]=0xcebaa (emu context), movzx eax,cl, call dword [0xcdac5], then restores ss from [0xcedaa] and esp from [0xcedac], pops [0xcda9c], clears [0xcedaa], fnclex: emulator entry stub. | audited DB3; DB4 entry moved from 0x69de8 (real head 0x69d21, old entry was mid-instruction)
+0x69d21 func _FPEHandler_ hand Sets [0xcda9c]=0xcebaa (emu context), movzx eax,cl, call dword [0xcdac5], then restores ss from [0xcedaa] and esp from [0xcedac], pops [0xcda9c], clears [0xcedaa], fnclex: emulator entry stub. | audited DB3; DB4 entry moved from 0x69de8 (real head 0x69d21, old entry was mid-instruction) (bsim audit 10-14: was fpe_DispatchEntry)
 0x6611c func dig_MixCopy8SSplitRL hand mixer output: high bytes signed into two byte buffers, right first
 0x660c3 func dig_MixCopy8SSplitLR hand mixer output: high bytes signed into two byte buffers, left first
 0x4a033 func lvl15_Stage2Start hand Pointer slot 0xc90a4 in the level-15 handler table 0xc9090.. (neighbours c90a0 lvl_Script_c90a0_Update, c90a8 lvl15_AlarmSpriteUpdate); raises stage DAT_002125d8 to at least 2 (c9094 raises to 1, c90b4 to 3), then cut_Leave if DAT_00212434 else DAT_00212408 = 0xc952c; no cutscene entry. | audited DB3 (was lvl15_EnterCutscene)
@@ -1095,7 +1095,7 @@
 0x59820 func ail_DigGetDriverInfo hand audited DB2 returns +0x18 +0x1c and copies the driver name at drvr+0x10+0xba into the caller buffers
 0x66ba6 func dig_MixMerge16StereoNoVolSwap hand resampling merge of 16-bit unsigned stereo without a volume table, swapped
 0x66b64 func dig_MixMerge16StereoNoVol hand resampling merge of 16-bit unsigned stereo without a volume table
-0x588a1 func dos_ReadHandle hand int 21 AH=3F read loop in 0xf000 chunks, from ail_LoadDriverFile and ail_IniReadLine
+0x588a1 func ail_DosReadChunked hand int 21 AH=3F read loop in 0xf000 chunks, from ail_LoadDriverFile and ail_IniReadLine (bsim audit 10-14: was dos_ReadHandle)
 0x4bbab func crt_FlushStream hand tell then flush of a dirty stream (flags 0x80 and 0x10), from crt_fclose and file_Open
 0x4ba6d func crt_StreamSeekInBuffer hand audited DB2 adjusts the stream buffer pointers by the seek delta, from crt_fseek
 0x6930d func crt_FloatFmtDigits hand scales by pow10 and converts to digits with __CmpBigInt, from crt_FloatFmtFE
@@ -1623,7 +1623,7 @@
 0x51130 func AIL_digital_configuration hand DB4 new: Miles wrapper, ail_DigGetDriverInfo returns driver info and name
 0x51650 func AIL_sample_volume hand DB4 new: Miles wrapper, calls API at 0x59d50 between sample_pan and playback_rate
 0x54c22 func crt_ExpFpu hand DB4 new: exp(x) via 2^(x*log2e) using f2xm1/fscale, guarded by compare
-0x5dbe0 func xmi_ProcessSequences hand DB4 new: XMIDI timer tick: per sequence note-offs, events, meta, sysex, tempo, volume ramps
+0x5dbe0 func ail_XmiServeSequences hand DB4 new: XMIDI timer tick: per sequence note-offs, events, meta, sysex, tempo, volume ramps (bsim audit 10-14: was xmi_ProcessSequences)
 0x615f0 func ail_StartupInstall hand DB4 new: calls init cb, installs MDI INI, sets 3 prefs, installs DIG driver, 1 on success
 0x1c05c func file_RecreateEmptyFile_c25d4 hand DB4 orphan: stops CD audio, unlinks fixed file, reopens it, fatal on fail, closes
 0x1c170 func file_WriteBufferToFile hand DB4 orphan: stops CD audio, opens path (mode c2620), fwrite len bytes, fatal on error, close
@@ -1648,3 +1648,4 @@
 0x69ec1 func fpe_StoreOrPopByModrm hand DB4 orphan: 387 emu dispatch on modrm bits, GetInf/StoreResultFloat or stack rotate
 0x69f39 func fpe_RotateStackByCount hand DB4 orphan: 387 emu rotates ST registers by count then loads ST0 from memory operand
 0x56dc5 func crt_IntStubTable hand DB4 orphan: 255 int N; ret stubs (3 bytes each) used by the int386 path to raise a computed interrupt number
+0x6458a func rt_FpuEmuAtanZeroCase hand bsim audit 10-14: was bogus_6458a

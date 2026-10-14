@@ -148,7 +148,7 @@
 0x060292d8 func ai_t19_ThinkBody hand row 19 think body: phase 0 snd_NearestDistB, countdown +0x58, aims at player via math_Atan2 (DOS 0x40ae8) | Q: DOS 0x40ae8
 0x06029eb0 func ai_DriftStep hand drift step with map_GetCell (DOS 0x41a54); callers ai_t18_Think, ai_t18_Update
 0x06016770 func snd_NearestDistB hand octagonal distance to the nearest of the two players, x3>>1, clamp 0x40..DAT_0601682a (DOS 0x240a5)
-0x06016338 func math_Div16 hand audited A1: Saturn-only (no DOS twin). bit-serial 16-bit divide (libgcc-style); callers ai_AimAtTarget, obj_CullFar, obj_UpdateAll, player_Control, player_Move
+0x06016338 func rt_UDiv32 hand audited A1: Saturn-only (no DOS twin). bit-serial 16-bit divide (libgcc-style); callers ai_AimAtTarget, obj_CullFar, obj_UpdateAll, player_Control, player_Move (bsim audit 10-14: was math_Div16)
 0x06025f64 func ai_Attack hand attack helper (ent, kind, n): random DAT_060260a4, 8-byte table rows by ent+0xc, ai_AnimNext x2 (DOS 0x3cb24); callers ai_t19_Init ai_t24_Init ai_t25_Slot2 ai_t18_Think
 0x06029c90 func ai_AimedShot hand aimed shot (ent, retry, kind, dx, dy): random refire then math_Atan2 + ai_AnimNext (DOS 0x41731); callers ai_t18_Think x2, FUN_0602c014
 0x0601b63c func ai_AnimNext hand advances the entity animation (DOS 0x2f334, 300 b); 14 AI callers incl. ai_Attack, ai_AimedShot, ai_t01/t04/t05/t15/t20
